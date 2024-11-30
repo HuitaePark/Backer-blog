@@ -8,10 +8,10 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class Comment {
-    Integer id;
-    Integer author_id;
-    String content;
-    LocalDateTime create_date;
+    private Integer id;
+    private Integer author_id;
+    private String content;
+    private LocalDateTime create_date;
 
     public Comment(Integer author_id, String content, LocalDateTime create_date, Integer id) {
         this.author_id = author_id;

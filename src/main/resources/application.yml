@@ -1,0 +1,18 @@
+spring:
+  application:
+    name:Backer-blog
+  datasource:
+    url:jdbc: mysql://localhost:3306/backer_db
+    username: root
+    password: 26323174
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  session:
+    store-type: redis
+    redis:
+      repository-type: indexed
+      flush-mode: on_save
+  data:
+    redis:
+      host: 127.0.0.1
+      password: abcd1234
+      port: 6379

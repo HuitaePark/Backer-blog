@@ -8,12 +8,12 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class Post {
-    Integer id;
-    Integer author_id;
-    Category category_id;
-    String title;
-    String content;
-    LocalDateTime create_date;
+    private Integer id;
+    private Integer author_id;
+    private Category category_id;
+    private String title;
+    private String content;
+    private LocalDateTime create_date;
 
     public Post(Integer author_id, String content, LocalDateTime create_date, Integer id, String title) {
         this.author_id = author_id;
