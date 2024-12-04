@@ -27,7 +27,7 @@ public class JoinRequest {
                 .username(this.username)
                 .password(this.password)
                 .name(this.name)
-                .role(MemberRole.USER)
+                .user_role(MemberRole.USER)
                 .build();
     }
 }

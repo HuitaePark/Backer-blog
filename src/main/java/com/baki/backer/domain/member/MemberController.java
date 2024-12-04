@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.ResponseErrorHandler;
 
 @RestController
 @RequiredArgsConstructor
@@ -70,7 +69,7 @@ public class MemberController {
         if(loginMember == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
-        if(!loginMember.getRole().equals(MemberRole.ADMIN)){
+        if(!loginMember.getUser_role().equals(MemberRole.ADMIN)){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("권한이 없습니다.");
         }
         return ResponseEntity.ok("관리자 페이지 접근 허가");

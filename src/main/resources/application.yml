@@ -2,7 +2,7 @@ spring:
   application:
     name:Backer-blog
   datasource:
-    url:jdbc: mysql://localhost:3306/backer_db
+    url: jdbc:mysql://localhost:3306/backer_db
     username: root
     password: 26323174
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -16,3 +16,9 @@ spring:
       host: 127.0.0.1
       password: abcd1234
       port: 6379
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate.format_sql: true
