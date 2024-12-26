@@ -1,7 +1,6 @@
 package com.baki.backer.domain.member;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -22,14 +21,14 @@ public class Member {
     private String password;
     @Column(nullable = false)
     private String name;
-    @Column(name = "create_date", nullable = false, updatable = false)
+    @Column(name = "create_date", updatable = false)
     private LocalDateTime crate_date;
 
     @Enumerated(EnumType.STRING)
     private MemberRole user_role;
 
     public Member(LocalDateTime crate_date, Integer id, String name, String password, String username,MemberRole user_role) {
-        this.crate_date = crate_date;
+        this.crate_date = LocalDateTime.now();
         this.id = id;
         this.name = name;
         this.password = password;

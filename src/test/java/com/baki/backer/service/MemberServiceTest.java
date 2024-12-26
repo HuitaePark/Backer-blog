@@ -1,4 +1,4 @@
-package com.baki.backer;
+package com.baki.backer.service;
 
 import com.baki.backer.domain.member.DTO.LoginRequest;
 import com.baki.backer.domain.member.Member;
@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -75,6 +74,7 @@ class MemberServiceTest {
         LocalDateTime currentTimestamp = LocalDateTime.now();
         Member member = Member.builder()
                 .username("hee") // 유니크한 username 설정
+
                 .password("1234")
                 .name("박희")
                 .crate_date(currentTimestamp)
@@ -108,23 +108,45 @@ class MemberServiceTest {
 
     @Test
     void getLoginMemberByUserId() {
-        LoginRequest loginRequest = new LoginRequest();
 
+        // When: "parkhee"로 로그인
+        LoginRequest loginRequest = new LoginRequest();
         loginRequest.setUsername("parkhee");
         loginRequest.setPassword("1234");
-        Member member = memberService.login(loginRequest);
+        Member loggedInMember = memberService.login(loginRequest);
 
-        assertEquals("parkhee",member.getUsername());
+        // Then: 로그인된 회원이 null이 아니고, 이름이 일치하는지 확인
+        assertNotNull(loggedInMember, "로그인된 회원은 null이 아니어야 합니다.");
+        assertEquals("박희", loggedInMember.getName(), "회원 이름이 일치해야 합니다.");
+
+        // When: 저장된 회원의 ID로 조회
+        Integer userId = loggedInMember.getId();
+        Member retrievedMember = memberService.getLoginMemberByUserId(userId);
+
+        // Then: 조회된 회원이 로그인된 회원과 동일한지 확인
+        assertNotNull(retrievedMember, "조회된 회원은 null이 아니어야 합니다.");
+        assertEquals(loggedInMember, retrievedMember, "조회된 회원은 로그인된 회원과 동일해야 합니다.");
+
     }
 
     @Test
     void getLoginMemberByUsername() {
+        // When: "parkhee"로 로그인
         LoginRequest loginRequest = new LoginRequest();
-
         loginRequest.setUsername("parkhee");
         loginRequest.setPassword("1234");
-        Member member = memberService.login(loginRequest);
+        Member loggedInMember = memberService.login(loginRequest);
 
-        assertEquals("박희",member.getName());
+        // Then: 로그인된 회원이 null이 아니고, 이름이 일치하는지 확인
+        assertNotNull(loggedInMember, "로그인된 회원은 null이 아니어야 합니다.");
+        assertEquals("박희", loggedInMember.getName(), "회원 이름이 일치해야 합니다.");
+
+        // When: 저장된 회원의 유저네임으로 조회
+        String username = loggedInMember.getUsername();
+        Member retrievedMember = memberService.getLoginMemberByUsername(username);
+
+        // Then: 조회된 회원이 로그인된 회원과 동일한지 확인
+        assertNotNull(retrievedMember, "조회된 회원은 null이 아니어야 합니다.");
+        assertEquals(loggedInMember, retrievedMember, "조회된 회원은 로그인된 회원과 동일해야 합니다.");
     }
 }

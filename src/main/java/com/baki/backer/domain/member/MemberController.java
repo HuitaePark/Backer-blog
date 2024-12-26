@@ -16,9 +16,10 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/session")
 public class MemberController {
-    private MemberService memberService;
 
-    @GetMapping("/join")
+    private final MemberService memberService;
+
+    @PostMapping("/join")
     public ResponseEntity<?> join(@Valid @RequestBody JoinRequest joinRequest, BindingResult bindingResult){
         if(memberService.checkLoginIdDuplicate(joinRequest.getUsername())){
             bindingResult.addError(new FieldError("joinRequest","username","로그인 아이디가 중복됩니다."));
@@ -35,7 +36,7 @@ public class MemberController {
         memberService.join(joinRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body("회원가입이 완료되었습니다.");
     }
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletRequest httpServletRequest){
         Member member = memberService.login(loginRequest);
 
