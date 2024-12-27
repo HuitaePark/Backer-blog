@@ -3,14 +3,12 @@ package com.baki.backer.domain.member;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Builder
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class Member {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,22 +17,8 @@ public class Member {
     private String username;
     @Column(nullable = false)
     private String password;
-    @Column(nullable = false)
-    private String name;
-    @Column(name = "create_date", updatable = false)
-    private LocalDateTime crate_date;
-
     @Enumerated(EnumType.STRING)
     private MemberRole user_role;
-
-    public Member(LocalDateTime crate_date, Integer id, String name, String password, String username,MemberRole user_role) {
-        this.crate_date = LocalDateTime.now();
-        this.id = id;
-        this.name = name;
-        this.password = password;
-        this.username = username;
-        this.user_role = user_role;
-    }
-
-
+    @Column(nullable = false)
+    private String name;
 }

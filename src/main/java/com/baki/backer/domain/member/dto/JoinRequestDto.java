@@ -1,4 +1,4 @@
-package com.baki.backer.domain.member.DTO;
+package com.baki.backer.domain.member.dto;
 
 import com.baki.backer.domain.member.Member;
 import com.baki.backer.domain.member.MemberRole;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class JoinRequest {
+public class JoinRequestDto {
 
     @NotBlank(message = "로그인 아이디가 비어있습니다.")
     private String username;

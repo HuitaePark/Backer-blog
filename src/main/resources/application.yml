@@ -22,3 +22,6 @@ spring:
     show-sql: true
     properties:
       hibernate.format_sql: true
+
+file:
+  dir: /Users/huitaepark/Desktop/S3

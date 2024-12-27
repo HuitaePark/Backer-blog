@@ -1,7 +1,7 @@
 package com.baki.backer.domain.member;
 
-import com.baki.backer.domain.member.DTO.JoinRequest;
-import com.baki.backer.domain.member.DTO.LoginRequest;
+import com.baki.backer.domain.member.dto.JoinRequestDto;
+import com.baki.backer.domain.member.dto.LoginRequestDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -20,25 +20,25 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/join")
-    public ResponseEntity<?> join(@Valid @RequestBody JoinRequest joinRequest, BindingResult bindingResult){
-        if(memberService.checkLoginIdDuplicate(joinRequest.getUsername())){
-            bindingResult.addError(new FieldError("joinRequest","username","로그인 아이디가 중복됩니다."));
+    public ResponseEntity<?> join(@Valid @RequestBody JoinRequestDto joinRequestDto, BindingResult bindingResult){
+        if(memberService.checkLoginIdDuplicate(joinRequestDto.getUsername())){
+            bindingResult.addError(new FieldError("joinRequestDto","username","로그인 아이디가 중복됩니다."));
         }
-        if(memberService.checkNameDuplicate(joinRequest.getName())){
-            bindingResult.addError(new FieldError("joinRequest","name","이름이 중복됩니다."));
+        if(memberService.checkNameDuplicate(joinRequestDto.getName())){
+            bindingResult.addError(new FieldError("joinRequestDto","name","이름이 중복됩니다."));
         }
-        if(!joinRequest.getPassword().equals(joinRequest.getPasswordCheck())){
-            bindingResult.addError(new FieldError("joinRequest","passwordCheck","비밀번호가 일치하지 않습니다."));
+        if(!joinRequestDto.getPassword().equals(joinRequestDto.getPasswordCheck())){
+            bindingResult.addError(new FieldError("joinRequestDto","passwordCheck","비밀번호가 일치하지 않습니다."));
         }
         if(bindingResult.hasErrors()){
             return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
         }
-        memberService.join(joinRequest);
+        memberService.join(joinRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body("회원가입이 완료되었습니다.");
     }
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletRequest httpServletRequest){
-        Member member = memberService.login(loginRequest);
+    public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletRequest httpServletRequest){
+        Member member = memberService.login(loginRequestDto);
 
         if(member == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 아이디 또는 비밀번호가 틀렸습니다.");

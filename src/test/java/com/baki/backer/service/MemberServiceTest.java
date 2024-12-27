@@ -1,6 +1,6 @@
 package com.baki.backer.service;
 
-import com.baki.backer.domain.member.DTO.LoginRequest;
+import com.baki.backer.domain.member.dto.LoginRequestDto;
 import com.baki.backer.domain.member.Member;
 import com.baki.backer.domain.member.MemberRepository;
 import com.baki.backer.domain.member.MemberRole;
@@ -9,8 +9,6 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,12 +30,10 @@ class MemberServiceTest {
         memberRepository.deleteAll();
 
         //회원 데이터 생성
-        LocalDateTime currentTimestamp = LocalDateTime.now();
         Member member = Member.builder()
-                .username("parkhee") // 유니크한 username 설정
+                .username("park") // 유니크한 username 설정
                 .password("1234")
                 .name("박희")
-                .crate_date(currentTimestamp)
                 .user_role(MemberRole.USER)
                 .build();
         memberRepository.save(member);
@@ -52,7 +48,7 @@ class MemberServiceTest {
             // Given: 아이디가 "hee"인 회원 저장
 
             // When & Then: "박희"는 중복, "바키"는 중복이 아님
-            assertTrue(memberService.checkLoginIdDuplicate("parkhee"), "아이디 'parkhee'는 중복되어야 합니다.");
+            assertTrue(memberService.checkLoginIdDuplicate("park"), "아이디 'park'는 중복되어야 합니다.");
             assertFalse(memberService.checkLoginIdDuplicate("qwer"), "아이디 'qwer'는 중복되지 않아야 합니다.");
         }
 
@@ -71,13 +67,10 @@ class MemberServiceTest {
     @Test
     @DisplayName("회원가입 테스트")
     void join() {
-        LocalDateTime currentTimestamp = LocalDateTime.now();
         Member member = Member.builder()
                 .username("hee") // 유니크한 username 설정
-
                 .password("1234")
                 .name("박희")
-                .crate_date(currentTimestamp)
                 .user_role(MemberRole.USER)
                 .build();
         memberRepository.save(member);
@@ -88,19 +81,19 @@ class MemberServiceTest {
     @Test
     void login() {
 
-        LoginRequest loginRequest1 = new LoginRequest();
-        LoginRequest loginRequest2 = new LoginRequest();
+        LoginRequestDto loginRequestDto1 = new LoginRequestDto();
+        LoginRequestDto loginRequestDto2 = new LoginRequestDto();
 
-        loginRequest1.setUsername("parkhee");
-        loginRequest1.setPassword("1234");
-        loginRequest2.setUsername("Baki");
-        loginRequest2.setPassword("wrongpassword");
+        loginRequestDto1.setUsername("park");
+        loginRequestDto1.setPassword("1234");
+        loginRequestDto2.setUsername("Baki");
+        loginRequestDto2.setPassword("wrongpassword");
 
-        Member member = memberService.login(loginRequest1);
+        Member member = memberService.login(loginRequestDto1);
         assertNotNull(member, "로그인된 회원은 null이 아니어야 합니다.");
         assertEquals("박희",member.getName());
 
-        Member failedLogin = memberService.login(loginRequest2);
+        Member failedLogin = memberService.login(loginRequestDto2);
 
         // Then: 로그인에 실패하여 null이 반환되는지 확인
         assertNull(failedLogin, "잘못된 비밀번호로 로그인 시도 시 null이 반환되어야 합니다.");
@@ -109,11 +102,11 @@ class MemberServiceTest {
     @Test
     void getLoginMemberByUserId() {
 
-        // When: "parkhee"로 로그인
-        LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setUsername("parkhee");
-        loginRequest.setPassword("1234");
-        Member loggedInMember = memberService.login(loginRequest);
+        // When: "park"로 로그인
+        LoginRequestDto loginRequestDto = new LoginRequestDto();
+        loginRequestDto.setUsername("park");
+        loginRequestDto.setPassword("1234");
+        Member loggedInMember = memberService.login(loginRequestDto);
 
         // Then: 로그인된 회원이 null이 아니고, 이름이 일치하는지 확인
         assertNotNull(loggedInMember, "로그인된 회원은 null이 아니어야 합니다.");
@@ -131,11 +124,11 @@ class MemberServiceTest {
 
     @Test
     void getLoginMemberByUsername() {
-        // When: "parkhee"로 로그인
-        LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setUsername("parkhee");
-        loginRequest.setPassword("1234");
-        Member loggedInMember = memberService.login(loginRequest);
+        // When: "park"로 로그인
+        LoginRequestDto loginRequestDto = new LoginRequestDto();
+        loginRequestDto.setUsername("park");
+        loginRequestDto.setPassword("1234");
+        Member loggedInMember = memberService.login(loginRequestDto);
 
         // Then: 로그인된 회원이 null이 아니고, 이름이 일치하는지 확인
         assertNotNull(loggedInMember, "로그인된 회원은 null이 아니어야 합니다.");
