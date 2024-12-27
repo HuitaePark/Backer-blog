@@ -3,6 +3,7 @@ package com.baki.backer.domain.member;
 
 import com.baki.backer.domain.member.dto.JoinRequestDto;
 import com.baki.backer.domain.member.dto.LoginRequestDto;
+import com.baki.backer.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

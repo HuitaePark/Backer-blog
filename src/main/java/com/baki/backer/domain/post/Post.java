@@ -12,21 +12,20 @@ import lombok.*;
 @Entity
 public class Post {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    @Column(nullable = false)
-    private Integer fk_member_id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Integer post_id;
+
+    @Column(name="fk_member_username",nullable = false)
+    private String writer_username;
+
     @Enumerated(EnumType.STRING)
     private Category category_id;
-    @Column(nullable = false)
-    private String title;
-    @Column(nullable = false)
-    private String content;
 
-    public Post(Integer fk_member_id, String content, Integer id, String title) {
-        this.fk_member_id = fk_member_id;
-        this.content = content;
-        this.id = id;
-        this.title = title;
-    }
+    @Column(name = "title",nullable = false)
+    private String title;
+
+    @Column(name = "content",nullable = false)
+    private String content;
 }

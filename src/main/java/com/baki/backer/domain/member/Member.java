@@ -11,14 +11,21 @@ import lombok.*;
 @NoArgsConstructor
 public class Member {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
-    @Column(nullable = false, unique = true)
+
+    @Column(name = "username",nullable = false, unique = true)
     private String username;
-    @Column(nullable = false)
+
+    @Column(name = "password",nullable = false)
     private String password;
+
     @Enumerated(EnumType.STRING)
+    @Column(name = "user_role")
     private MemberRole user_role;
-    @Column(nullable = false)
+
+    @Column(name = "name",nullable = false)
     private String name;
 }

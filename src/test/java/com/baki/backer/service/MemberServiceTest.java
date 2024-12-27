@@ -2,7 +2,7 @@ package com.baki.backer.service;
 
 import com.baki.backer.domain.member.dto.LoginRequestDto;
 import com.baki.backer.domain.member.Member;
-import com.baki.backer.domain.member.MemberRepository;
+import com.baki.backer.domain.member.repository.MemberRepository;
 import com.baki.backer.domain.member.MemberRole;
 import com.baki.backer.domain.member.MemberService;
 import org.junit.jupiter.api.*;
