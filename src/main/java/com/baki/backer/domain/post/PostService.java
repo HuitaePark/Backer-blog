@@ -1,6 +1,7 @@
 package com.baki.backer.domain.post;
 
 
+import com.baki.backer.domain.post.dto.DetailPostResponseDto;
 import com.baki.backer.domain.post.dto.PostSaveRequestDto;
 
 public interface PostService {
@@ -25,10 +26,13 @@ public interface PostService {
     /**
      * 게시글 1개 조회
      */
-    void getPostInfo(Integer post_id);
+    DetailPostResponseDto getPostInfo(Integer post_id);
 
     /**
      * 검색 조건에 따른 게시글 리스트 조회 + 페이징
+     *
+     *
      */
+    void getPostList();
 
 }

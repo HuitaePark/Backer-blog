@@ -1,5 +1,6 @@
 package com.baki.backer.domain.comment;
 
+import com.baki.backer.domain.post.Post;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,4 +28,7 @@ public class Comment {
     @Column(name = "fk_post_id",nullable = false)
     private Integer post_id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fk_post_id")
+    private Post post;
 }

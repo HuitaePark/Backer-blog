@@ -23,11 +23,13 @@ public class QPost extends EntityPathBase<Post> {
 
     public final StringPath content = createString("content");
 
-    public final NumberPath<Integer> fk_member_id = createNumber("writer_id", Integer.class);
-
-    public final NumberPath<Integer> id = createNumber("id", Integer.class);
+    public final NumberPath<Integer> post_id = createNumber("post_id", Integer.class);
 
     public final StringPath title = createString("title");
+
+    public final NumberPath<Integer> writer_id = createNumber("writer_id", Integer.class);
+
+    public final StringPath writer_username = createString("writer_username");
 
     public QPost(String variable) {
         super(Post.class, forVariable(variable));

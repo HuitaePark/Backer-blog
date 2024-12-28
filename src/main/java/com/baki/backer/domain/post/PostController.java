@@ -1,10 +1,9 @@
 package com.baki.backer.domain.post;
 
 import com.baki.backer.domain.member.MemberService;
+import com.baki.backer.domain.post.dto.DetailPostResponseDto;
 import com.baki.backer.domain.post.dto.PostSaveRequestDto;
-import com.baki.backer.domain.post.dto.PostUpdateRequestDto;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,7 +13,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Objects;
 
 @Controller
 @RequiredArgsConstructor
@@ -26,7 +24,10 @@ public class PostController {
     @PostMapping
     public ResponseEntity<?> posting(@Valid @RequestBody PostSaveRequestDto postSaveRequestDto, BindingResult bindingResult, HttpServletRequest request){
         String currentUsername = memberService.getCurrentSessionUsername(request);
-
+        //로그인 검사
+        if(currentUsername == null){
+            bindingResult.addError(new FieldError("PostSaveRequestDto","username","로그인이 필요합니다."));
+        }
         if(!postService.checkLoginId(currentUsername)){
             bindingResult.addError(new FieldError("PostSaveRequestDto","user_Id","존재하지 않는 아이디 입니다."));
         }
@@ -39,14 +40,35 @@ public class PostController {
         String currentUsername = memberService.getCurrentSessionUsername(request);
         //로그인 검사
         if(currentUsername == null){
-            bindingResult.addError(new FieldError("PostUpdateRequestDto","username","로그인이 필요합니다."));
+            bindingResult.addError(new FieldError("PostSaveRequestDto","username","로그인이 필요합니다."));
         }
         //다른유저가 수정할 경우 금지
         if(postService.checkWriterEquals(currentUsername,post_id)){
-            bindingResult.addError(new FieldError("PostUpdateRequestDto","username","수정 권한이 없습니다."));
+            bindingResult.addError(new FieldError("PostSaveRequestDto","username","수정 권한이 없습니다."));
         }
 
         postService.updatePost(post_id,requestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body("게시물 수정을 성공하였습니다");
+        return ResponseEntity.status(HttpStatus.OK).body("게시물 수정을 성공하였습니다");
+    }
+    @DeleteMapping("/post/{post_id}")
+    public ResponseEntity<?> removing(@Valid @PathVariable Integer post_id,BindingResult bindingResult,HttpServletRequest request){
+        String currentUsername = memberService.getCurrentSessionUsername(request);
+        //로그인 검사
+        if(currentUsername == null){
+            bindingResult.addError(new FieldError("PostSaveRequestDto","username","로그인이 필요합니다."));
+        }
+        //다른유저가 수정할 경우 금지
+        if(postService.checkWriterEquals(currentUsername,post_id)){
+            bindingResult.addError(new FieldError("PostSaveRequestDto","username","수정 권한이 없습니다."));
+        }
+
+        postService.deletePost(post_id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("게시물 삭제를 성공하였습니다");
+    }
+    @GetMapping("/post/view/{post_id}")
+    public ResponseEntity<DetailPostResponseDto> getPost(@Valid @PathVariable Integer post_id, BindingResult bindingResult, HttpServletRequest request){
+        DetailPostResponseDto responseDto = postService.getPostInfo(post_id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 }

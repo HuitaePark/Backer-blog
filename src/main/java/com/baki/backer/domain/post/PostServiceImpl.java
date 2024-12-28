@@ -1,12 +1,14 @@
 package com.baki.backer.domain.post;
 
 import com.baki.backer.domain.member.repository.MemberRepository;
+import com.baki.backer.domain.post.dto.DetailPostResponseDto;
 import com.baki.backer.domain.post.dto.PostSaveRequestDto;
-import com.baki.backer.domain.post.dto.PostUpdateRequestDto;
 import com.baki.backer.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -48,11 +50,20 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public void deletePost(Integer post_id) {
-
+        Post existingPost = postRepository.findById(post_id).orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
+        postRepository.delete(existingPost);
     }
 
     @Override
-    public void getPostInfo(Integer post_id) {
+    public DetailPostResponseDto getPostInfo(Integer post_id) {
+        Post post = postRepository.findPostWithComment(post_id);
+        if (post == null) {throw new RuntimeException("게시글을 찾을 수 없습니다.");}
+        post.setWriter_username(memberRepository.findNameByUsername(post.getWriter_username()));
+        return new DetailPostResponseDto(post);
+    }
+
+    @Override
+    public void getPostList() {
 
     }
 
