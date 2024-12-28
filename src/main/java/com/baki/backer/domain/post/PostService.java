@@ -1,25 +1,26 @@
 package com.baki.backer.domain.post;
 
 
-import com.baki.backer.domain.post.dto.PostRequestDto;
-import com.baki.backer.domain.post.dto.PostUpdateDto;
+import com.baki.backer.domain.post.dto.PostSaveRequestDto;
 
 public interface PostService {
 
     /**
      * 게시글 등록
      */
-    void createPost(PostRequestDto request,String currentUsername);
+    void createPost(PostSaveRequestDto request, String currentUsername);
 
     /**
      * 게시글 수정
+     *
+     *
      */
-    void updatePost(Integer post_id, PostUpdateDto update);
+    void updatePost(Integer postId, PostSaveRequestDto request);
 
     /**
      * 게시글 삭제
      */
-    void postDelete(Integer post_id);
+    void deletePost(Integer postId);
 
     /**
      * 게시글 1개 조회

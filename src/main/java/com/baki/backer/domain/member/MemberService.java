@@ -4,6 +4,8 @@ package com.baki.backer.domain.member;
 import com.baki.backer.domain.member.dto.JoinRequestDto;
 import com.baki.backer.domain.member.dto.LoginRequestDto;
 import com.baki.backer.domain.member.repository.MemberRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,16 +73,24 @@ public class MemberService {
         if(userId == null) return null;
 
         Optional<Member> optionalUser = memberRepository.findById(userId);
-        if(optionalUser.isEmpty()) return null;
+        return optionalUser.orElse(null);
 
-        return optionalUser.get();
     }
     public Member getLoginMemberByUsername(String username) {
         if(username == null) return null;
 
         Optional<Member> optionalUser = memberRepository.findByUsername(username);
-        if(optionalUser.isEmpty()) return null;
+        return optionalUser.orElse(null);
 
-        return optionalUser.get();
+    }
+
+    /**
+     *
+     * @param request 요청의 리퀘스트를 받음
+     * @return 현재 세션의 유저네임을 반환
+     */
+    public String getCurrentSessionUsername(HttpServletRequest request){
+        HttpSession session = request.getSession(false);
+        return (String) session.getAttribute("username");
     }
 }
