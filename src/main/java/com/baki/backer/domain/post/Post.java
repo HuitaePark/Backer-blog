@@ -1,6 +1,7 @@
 package com.baki.backer.domain.post;
 
 import com.baki.backer.domain.comment.Comment;
+import com.baki.backer.domain.member.Member;
 import com.baki.backer.domain.post.dto.PostSaveRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,8 +25,8 @@ public class Post {
     @Column(name = "id")
     private Integer post_id;
 
-    @Column(name="fk_member_username",nullable = false)
-    private String writer_username;
+    @Column(name= "fk_member_name",nullable = false)
+    private String writer_name;
 
     @Enumerated(EnumType.STRING)
     private Category category_id;
@@ -36,16 +37,17 @@ public class Post {
     @Column(name = "content",nullable = false,columnDefinition = "TEXT")
     private String content;
 
-    @Column(name="fk_member_id",nullable = false)
-    private Integer writer_id;
-
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime create_Date;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Comment> comments = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fk_member_id", nullable = false)
+    private Member member;
 
     public void updateDto(PostSaveRequestDto request) {
         this.title = request.title();

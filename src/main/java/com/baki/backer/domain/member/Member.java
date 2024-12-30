@@ -9,6 +9,7 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "member")
 public class Member {
 
     @Id
@@ -28,4 +29,6 @@ public class Member {
 
     @Column(name = "name",nullable = false)
     private String name;
+
+
 }

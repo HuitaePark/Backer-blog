@@ -22,7 +22,7 @@ public class DetailPostResponseDto{
         this.content = post.getContent();
         this.id = post.getPost_id();
         this.title = post.getTitle();
-        this.name = post.getWriter_username();
+        this.name = post.getWriter_name();
         this.create_date=post.getCreate_Date();
         this.comments = post.getComments().stream()
                 .map(CommentRequestDto::new)

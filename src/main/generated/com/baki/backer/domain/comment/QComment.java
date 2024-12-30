@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -17,26 +18,37 @@ public class QComment extends EntityPathBase<Comment> {
 
     private static final long serialVersionUID = -1704255716L;
 
+    private static final PathInits INITS = PathInits.DIRECT2;
+
     public static final QComment comment = new QComment("comment");
 
     public final NumberPath<Integer> comment_id = createNumber("comment_id", Integer.class);
 
     public final StringPath content = createString("content");
 
-    public final NumberPath<Integer> post_id = createNumber("post_id", Integer.class);
+    public final com.baki.backer.domain.post.QPost post;
 
     public final NumberPath<Integer> writer_id = createNumber("writer_id", Integer.class);
 
     public QComment(String variable) {
-        super(Comment.class, forVariable(variable));
+        this(Comment.class, forVariable(variable), INITS);
     }
 
     public QComment(Path<? extends Comment> path) {
-        super(path.getType(), path.getMetadata());
+        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
     public QComment(PathMetadata metadata) {
-        super(Comment.class, metadata);
+        this(metadata, PathInits.getFor(metadata, INITS));
+    }
+
+    public QComment(PathMetadata metadata, PathInits inits) {
+        this(Comment.class, metadata, inits);
+    }
+
+    public QComment(Class<? extends Comment> type, PathMetadata metadata, PathInits inits) {
+        super(type, metadata, inits);
+        this.post = inits.isInitialized("post") ? new com.baki.backer.domain.post.QPost(forProperty("post"), inits.get("post")) : null;
     }
 
 }

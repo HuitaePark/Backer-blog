@@ -1,5 +1,6 @@
 package com.baki.backer.domain.post.dto;
 
+import com.baki.backer.domain.member.Member;
 import com.baki.backer.domain.post.Category;
 import com.baki.backer.domain.post.Post;
 import jakarta.validation.constraints.NotBlank;

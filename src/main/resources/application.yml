@@ -1,6 +1,6 @@
 spring:
   application:
-    name:Backer-blog
+    name: Backer-blog
   datasource:
     url: jdbc:mysql://localhost:3306/backer_db
     username: root
@@ -16,6 +16,10 @@ spring:
       host: 127.0.0.1
       password: abcd1234
       port: 6379
+    web:
+      pageable:
+        default-page-size: 20  #페이징 할 때 기본값, 20개씩 조회
+
   jpa:
     hibernate:
       ddl-auto: none

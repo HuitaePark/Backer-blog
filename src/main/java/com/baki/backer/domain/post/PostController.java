@@ -1,11 +1,14 @@
 package com.baki.backer.domain.post;
 
 import com.baki.backer.domain.member.MemberService;
+import com.baki.backer.domain.member.repository.MemberRepository;
 import com.baki.backer.domain.post.dto.DetailPostResponseDto;
+import com.baki.backer.domain.post.dto.PostListResponseDto;
 import com.baki.backer.domain.post.dto.PostSaveRequestDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -20,10 +23,12 @@ import org.springframework.web.bind.annotation.*;
 public class PostController {
     private final PostServiceImpl postService;
     private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
     @PostMapping
     public ResponseEntity<?> posting(@Valid @RequestBody PostSaveRequestDto postSaveRequestDto, BindingResult bindingResult, HttpServletRequest request){
         String currentUsername = memberService.getCurrentSessionUsername(request);
+        Integer userId = memberRepository.findIdByUsername(currentUsername);
         //로그인 검사
         if(currentUsername == null){
             bindingResult.addError(new FieldError("PostSaveRequestDto","username","로그인이 필요합니다."));
@@ -31,7 +36,7 @@ public class PostController {
         if(!postService.checkLoginId(currentUsername)){
             bindingResult.addError(new FieldError("PostSaveRequestDto","user_Id","존재하지 않는 아이디 입니다."));
         }
-        postService.createPost(postSaveRequestDto,currentUsername);
+        postService.createPost(postSaveRequestDto,userId);
         return ResponseEntity.status(HttpStatus.CREATED).body("게시물 작성을 성공하였습니다");
     }
 
@@ -70,5 +75,25 @@ public class PostController {
         DetailPostResponseDto responseDto = postService.getPostInfo(post_id);
 
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+    /**
+     * 게시물을 검색하고 페이징 처리된 결과를 반환합니다.
+     *
+     * @param keyword  검색 키워드 (옵션)
+     * @param category 게시물 카테고리 ID (옵션)
+     * @param page     페이지 번호 (기본값: 1)
+     * @param size     페이지 크기 (기본값: 20)
+     * @param sort     정렬 기준 (예: "create_date,desc")
+     * @return 페이징 처리된 게시물 목록
+     */
+    @GetMapping("/post/list")
+    public Page<PostListResponseDto> getPostList(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "category", required = false) String category,
+            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+            @RequestParam(value = "size", required = false, defaultValue = "20") Integer size,
+            @RequestParam(value = "sort", required = false, defaultValue = "create_date,desc") String sort
+    ){
+        return postService.getPostList(keyword, category, page, size, sort);
     }
 }
