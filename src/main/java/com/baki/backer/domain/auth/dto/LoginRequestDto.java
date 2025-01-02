@@ -1,4 +1,4 @@
-package com.baki.backer.domain.member.dto;
+package com.baki.backer.domain.auth.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

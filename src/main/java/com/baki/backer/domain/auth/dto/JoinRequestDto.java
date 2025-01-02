@@ -1,4 +1,4 @@
-package com.baki.backer.domain.member.dto;
+package com.baki.backer.domain.auth.dto;
 
 import com.baki.backer.domain.member.Member;
 import com.baki.backer.domain.member.MemberRole;

@@ -1,9 +1,10 @@
-package com.baki.backer.domain.member;
+package com.baki.backer.domain.auth;
 
 
-import com.baki.backer.domain.member.dto.JoinRequestDto;
-import com.baki.backer.domain.member.dto.LoginRequestDto;
-import com.baki.backer.domain.member.repository.MemberRepository;
+import com.baki.backer.domain.auth.dto.JoinRequestDto;
+import com.baki.backer.domain.auth.dto.LoginRequestDto;
+import com.baki.backer.domain.member.Member;
+import com.baki.backer.domain.member.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ import java.util.Optional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class MemberService {
+public class AuthService {
 
     private final MemberRepository memberRepository;
 
@@ -85,7 +86,7 @@ public class MemberService {
     }
 
     /**
-     * 
+     *
      * @param request 요청의 리퀘스트를 받음
      * @return 현재 세션의 유저네임을 반환
      */

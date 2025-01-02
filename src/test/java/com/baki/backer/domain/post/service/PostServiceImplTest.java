@@ -2,7 +2,7 @@ package com.baki.backer.domain.post.service;
 
 import com.baki.backer.domain.member.Member;
 import com.baki.backer.domain.member.MemberRole;
-import com.baki.backer.domain.member.repository.MemberRepository;
+import com.baki.backer.domain.member.MemberRepository;
 import com.baki.backer.domain.post.Category;
 import com.baki.backer.domain.post.Post;
 import com.baki.backer.domain.post.PostService;
@@ -16,8 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
 

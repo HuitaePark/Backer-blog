@@ -1,7 +1,9 @@
-package com.baki.backer.domain.member;
+package com.baki.backer.domain.auth;
 
-import com.baki.backer.domain.member.dto.JoinRequestDto;
-import com.baki.backer.domain.member.dto.LoginRequestDto;
+import com.baki.backer.domain.auth.dto.JoinRequestDto;
+import com.baki.backer.domain.auth.dto.LoginRequestDto;
+import com.baki.backer.domain.member.Member;
+import com.baki.backer.domain.member.MemberRole;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -15,16 +17,16 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/session")
-public class MemberController {
+public class AuthController {
 
-    private final MemberService memberService;
+    private final AuthService authService;
 
     @PostMapping("/join")
     public ResponseEntity<?> join(@Valid @RequestBody JoinRequestDto joinRequestDto, BindingResult bindingResult){
-        if(memberService.checkLoginIdDuplicate(joinRequestDto.getUsername())){
+        if(authService.checkLoginIdDuplicate(joinRequestDto.getUsername())){
             bindingResult.addError(new FieldError("joinRequestDto","username","로그인 아이디가 중복됩니다."));
         }
-        if(memberService.checkNameDuplicate(joinRequestDto.getName())){
+        if(authService.checkNameDuplicate(joinRequestDto.getName())){
             bindingResult.addError(new FieldError("joinRequestDto","name","이름이 중복됩니다."));
         }
         if(!joinRequestDto.getPassword().equals(joinRequestDto.getPasswordCheck())){
@@ -33,12 +35,12 @@ public class MemberController {
         if(bindingResult.hasErrors()){
             return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
         }
-        memberService.join(joinRequestDto);
+        authService.join(joinRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body("회원가입이 완료되었습니다.");
     }
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletRequest httpServletRequest){
-        Member member = memberService.login(loginRequestDto);
+        Member member = authService.login(loginRequestDto);
 
         if(member == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 아이디 또는 비밀번호가 틀렸습니다.");
@@ -66,7 +68,7 @@ public class MemberController {
         if(Id == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
-        Member loginMember = memberService.getLoginMemberByUserId(Id);
+        Member loginMember = authService.getLoginMemberByUserId(Id);
         if(loginMember == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }

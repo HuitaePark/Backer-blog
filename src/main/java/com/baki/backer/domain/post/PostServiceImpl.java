@@ -1,7 +1,7 @@
 package com.baki.backer.domain.post;
 
 import com.baki.backer.domain.member.Member;
-import com.baki.backer.domain.member.repository.MemberRepository;
+import com.baki.backer.domain.member.MemberRepository;
 import com.baki.backer.domain.post.dto.DetailPostResponseDto;
 import com.baki.backer.domain.post.dto.PostListResponseDto;
 import com.baki.backer.domain.post.dto.PostSaveRequestDto;

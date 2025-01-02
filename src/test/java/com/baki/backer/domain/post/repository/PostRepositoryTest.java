@@ -2,7 +2,7 @@ package com.baki.backer.domain.post.repository;
 
 import com.baki.backer.domain.member.Member;
 import com.baki.backer.domain.member.MemberRole;
-import com.baki.backer.domain.member.repository.MemberRepository;
+import com.baki.backer.domain.member.MemberRepository;
 import com.baki.backer.domain.post.Category;
 import com.baki.backer.domain.post.Post;
 import com.baki.backer.domain.post.dto.PostListResponseDto;
@@ -16,8 +16,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest

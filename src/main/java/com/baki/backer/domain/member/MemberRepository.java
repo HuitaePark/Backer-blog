@@ -1,6 +1,5 @@
-package com.baki.backer.domain.member.repository;
+package com.baki.backer.domain.member;
 
-import com.baki.backer.domain.member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

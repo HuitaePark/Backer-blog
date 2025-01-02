@@ -1,8 +1,5 @@
-package com.baki.backer.domain.member.repository;
+package com.baki.backer.domain.member;
 
-import com.baki.backer.domain.member.Member;
-import com.baki.backer.domain.member.MemberRole;
-import com.baki.backer.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

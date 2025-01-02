@@ -1,16 +1,13 @@
-package com.baki.backer.domain.member.service;
+package com.baki.backer.domain.auth;
 
+import com.baki.backer.domain.auth.dto.JoinRequestDto;
+import com.baki.backer.domain.auth.dto.LoginRequestDto;
 import com.baki.backer.domain.member.Member;
 import com.baki.backer.domain.member.MemberRole;
-import com.baki.backer.domain.member.MemberService;
-import com.baki.backer.domain.member.repository.MemberRepository;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-import jakarta.transaction.Transactional;
+import com.baki.backer.domain.member.MemberRepository;
 import jdk.jfr.Name;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import com.baki.backer.domain.member.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -21,18 +18,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-class MemberServiceTest {
+class AuthServiceTest {
 
-    private MemberService memberService;
+    private AuthService authService;
     private MemberRepository memberRepository;
 
     JoinRequestDto joinRequestDto;
     LoginRequestDto loginRequestDto;
 
     @Autowired
-    public MemberServiceTest(MemberRepository memberRepository, MemberService memberService) {
+    public AuthServiceTest(MemberRepository memberRepository, AuthService authService) {
         this.memberRepository = memberRepository;
-        this.memberService = memberService;
+        this.authService = authService;
     }
 
     @BeforeEach
@@ -61,43 +58,43 @@ class MemberServiceTest {
     @Test
     @Name("로그인 아이디 중복 확인")
     void checkLoginIdDuplicate() {
-        assertTrue(memberService.checkLoginIdDuplicate("testuser"));
-        assertFalse(memberService.checkLoginIdDuplicate("notFounduser"));
+        assertTrue(authService.checkLoginIdDuplicate("testuser"));
+        assertFalse(authService.checkLoginIdDuplicate("notFounduser"));
     }
 
     @Test
     @Name("닉네임 중복 확인")
     void checkNameDuplicate() {
-        assertTrue(memberService.checkNameDuplicate("Test User"));
-        assertFalse(memberService.checkNameDuplicate("notFounduser"));
+        assertTrue(authService.checkNameDuplicate("Test User"));
+        assertFalse(authService.checkNameDuplicate("notFounduser"));
     }
 
     @Test
     void join() {
-        memberService.join(joinRequestDto);
-        assertTrue(memberService.checkLoginIdDuplicate("test"));
-        assertTrue(memberService.checkNameDuplicate("Test"));
+        authService.join(joinRequestDto);
+        assertTrue(authService.checkLoginIdDuplicate("test"));
+        assertTrue(authService.checkNameDuplicate("Test"));
     }
 
     @Test
     void getLoginMemberByUserId() {
-        memberService.login(loginRequestDto);
-        Member loginMember = memberService.getLoginMemberByUserId(1);
+        authService.login(loginRequestDto);
+        Member loginMember = authService.getLoginMemberByUserId(1);
         assertNotNull(loginMember);
     }
 
     @Test
     void getLoginMemberByUsername() {
-        memberService.login(loginRequestDto);
-        Member loginMember = memberService.getLoginMemberByUsername("testuser");
+        authService.login(loginRequestDto);
+        Member loginMember = authService.getLoginMemberByUsername("testuser");
         assertNotNull(loginMember);
     }
 
     @Test
     void getCurrentSessionUsername() {
         // given
-        memberService.login(loginRequestDto);
-        Member loginMember = memberService.getLoginMemberByUsername("testuser");
+        authService.login(loginRequestDto);
+        Member loginMember = authService.getLoginMemberByUsername("testuser");
 
         // MockHttpServletRequest 생성
         MockHttpServletRequest request = new MockHttpServletRequest();

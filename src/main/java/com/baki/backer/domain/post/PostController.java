@@ -1,7 +1,7 @@
 package com.baki.backer.domain.post;
 
-import com.baki.backer.domain.member.MemberService;
-import com.baki.backer.domain.member.repository.MemberRepository;
+import com.baki.backer.domain.auth.AuthService;
+import com.baki.backer.domain.member.MemberRepository;
 import com.baki.backer.domain.post.dto.DetailPostResponseDto;
 import com.baki.backer.domain.post.dto.PostListResponseDto;
 import com.baki.backer.domain.post.dto.PostSaveRequestDto;
@@ -22,12 +22,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/post")
 public class PostController {
     private final PostServiceImpl postService;
-    private final MemberService memberService;
+    private final AuthService authService;
     private final MemberRepository memberRepository;
 
     @PostMapping
     public ResponseEntity<?> posting(@Valid @RequestBody PostSaveRequestDto postSaveRequestDto, BindingResult bindingResult, HttpServletRequest request){
-        String currentUsername = memberService.getCurrentSessionUsername(request);
+        String currentUsername = authService.getCurrentSessionUsername(request);
         Integer userId = memberRepository.findIdByUsername(currentUsername);
         //로그인 검사
         if(currentUsername == null){
@@ -42,7 +42,7 @@ public class PostController {
 
     @PatchMapping("/post/{post_id}")
     public ResponseEntity<?> updating(@Valid @RequestBody PostSaveRequestDto requestDto, BindingResult bindingResult, HttpServletRequest request, @PathVariable Integer post_id){
-        String currentUsername = memberService.getCurrentSessionUsername(request);
+        String currentUsername = authService.getCurrentSessionUsername(request);
         //로그인 검사
         if(currentUsername == null){
             bindingResult.addError(new FieldError("PostSaveRequestDto","username","로그인이 필요합니다."));
@@ -57,7 +57,7 @@ public class PostController {
     }
     @DeleteMapping("/post/{post_id}")
     public ResponseEntity<?> removing(@Valid @PathVariable Integer post_id,BindingResult bindingResult,HttpServletRequest request){
-        String currentUsername = memberService.getCurrentSessionUsername(request);
+        String currentUsername = authService.getCurrentSessionUsername(request);
         //로그인 검사
         if(currentUsername == null){
             bindingResult.addError(new FieldError("PostSaveRequestDto","username","로그인이 필요합니다."));
