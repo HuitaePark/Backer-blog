@@ -77,7 +77,6 @@ public class PostServiceImpl implements PostService{
     public DetailPostResponseDto getPostInfo(Integer post_id) {
         Post post = postRepository.findPostWithComment(post_id);
         if (post == null) {throw new RuntimeException("게시글을 찾을 수 없습니다.");}
-        post.setWriter_name(memberRepository.findNameByUsername(post.getWriter_name()));
         return new DetailPostResponseDto(post);
     }
     /**
@@ -112,7 +111,7 @@ public class PostServiceImpl implements PostService{
 
     public boolean checkWriterEquals(String currentUsername,Integer post_id){
         Post existingPost = postRepository.findById(post_id).orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
-        String writerUsername = existingPost.getWriter_name();
+        String writerUsername = existingPost.getMember().getName();
         return writerUsername.equals(currentUsername);
     }
 }

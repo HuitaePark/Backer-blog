@@ -25,9 +25,6 @@ public class Post {
     @Column(name = "id")
     private Integer post_id;
 
-    @Column(name= "fk_member_name",nullable = false)
-    private String writer_name;
-
     @Enumerated(EnumType.STRING)
     private Category category_id;
 

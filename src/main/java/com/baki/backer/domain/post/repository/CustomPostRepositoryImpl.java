@@ -47,6 +47,7 @@ public class CustomPostRepositoryImpl implements CustomPostRepository{
                         post.title,
                         post.content))
                 .from(post)
+                .leftJoin(post.member, member)
                 .where(
                         containsKeyword(keyword),
                         matchesCategory(category)

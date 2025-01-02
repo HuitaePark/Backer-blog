@@ -41,6 +41,9 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+	// H2 Database (테스트용 인메모리 데이터베이스)
+	testImplementation 'com.h2database:h2'
+
 	// AssertJ (선택사항, 더 나은 어서션 제공)
 	testImplementation 'org.assertj:assertj-core:3.23.1'
 
@@ -61,7 +64,7 @@ tasks.named('test') {
 def generated = 'src/main/generated'
 
 // querydsl QClass 파일 생성 위치를 지정
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
 	options.getGeneratedSourceOutputDirectory().set(file(generated))
 }
 

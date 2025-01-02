@@ -1,7 +1,7 @@
 package com.baki.backer.domain.post;
 
 public enum Category {
-    QUESTION(1), INFORMATION(2),HUMOR(3);
+    QUESTION(1), INFORMATION(2),HUMOR(3), FREE(4);
 
     private final int value;
 
@@ -16,6 +16,7 @@ public enum Category {
           case 1 -> QUESTION;
           case 2 -> INFORMATION;
           case 3 -> HUMOR;
+          case 4 -> FREE;
           default -> throw new AssertionError("unknown value : " + value);
         };
     }

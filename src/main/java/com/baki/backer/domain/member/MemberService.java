@@ -85,7 +85,7 @@ public class MemberService {
     }
 
     /**
-     *
+     * 
      * @param request 요청의 리퀘스트를 받음
      * @return 현재 세션의 유저네임을 반환
      */
