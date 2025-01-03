@@ -70,7 +70,7 @@ public class AuthService {
      * username이 null이거나(로그인 X) username으로 찾아온 Member가 없으면 null return
      * username으로 찾아온 member가 존재하면 Member return
      */
-    public Member getLoginMemberByUserId(Integer userId) {
+    public Member getLoginMemberByUserId(Long userId) {
         if(userId == null) return null;
 
         Optional<Member> optionalUser = memberRepository.findById(userId);

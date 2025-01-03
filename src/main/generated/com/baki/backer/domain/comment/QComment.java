@@ -22,13 +22,13 @@ public class QComment extends EntityPathBase<Comment> {
 
     public static final QComment comment = new QComment("comment");
 
-    public final NumberPath<Integer> comment_id = createNumber("comment_id", Integer.class);
+    public final NumberPath<Long> comment_id = createNumber("comment_id", Long.class);
 
     public final StringPath content = createString("content");
 
-    public final com.baki.backer.domain.post.QPost post;
+    public final com.baki.backer.domain.member.QMember member;
 
-    public final NumberPath<Integer> writer_id = createNumber("writer_id", Integer.class);
+    public final com.baki.backer.domain.post.QPost post;
 
     public QComment(String variable) {
         this(Comment.class, forVariable(variable), INITS);
@@ -48,6 +48,7 @@ public class QComment extends EntityPathBase<Comment> {
 
     public QComment(Class<? extends Comment> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.member = inits.isInitialized("member") ? new com.baki.backer.domain.member.QMember(forProperty("member")) : null;
         this.post = inits.isInitialized("post") ? new com.baki.backer.domain.post.QPost(forProperty("post"), inits.get("post")) : null;
     }
 

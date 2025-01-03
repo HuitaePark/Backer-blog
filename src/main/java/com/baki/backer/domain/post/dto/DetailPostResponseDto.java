@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 public class DetailPostResponseDto{
-    private Integer id;
+    private Long id;
     private String title;
     private String content;
     private String name;

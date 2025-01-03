@@ -28,7 +28,7 @@ public class PostController {
     @PostMapping
     public ResponseEntity<?> posting(@Valid @RequestBody PostSaveRequestDto postSaveRequestDto, BindingResult bindingResult, HttpServletRequest request){
         String currentUsername = authService.getCurrentSessionUsername(request);
-        Integer userId = memberRepository.findIdByUsername(currentUsername);
+        Long userId = memberRepository.findIdByUsername(currentUsername);
         //로그인 검사
         if(currentUsername == null){
             bindingResult.addError(new FieldError("PostSaveRequestDto","username","로그인이 필요합니다."));
@@ -41,7 +41,7 @@ public class PostController {
     }
 
     @PatchMapping("/post/{post_id}")
-    public ResponseEntity<?> updating(@Valid @RequestBody PostSaveRequestDto requestDto, BindingResult bindingResult, HttpServletRequest request, @PathVariable Integer post_id){
+    public ResponseEntity<?> updating(@Valid @RequestBody PostSaveRequestDto requestDto, BindingResult bindingResult, HttpServletRequest request, @PathVariable Long post_id){
         String currentUsername = authService.getCurrentSessionUsername(request);
         //로그인 검사
         if(currentUsername == null){
@@ -56,7 +56,7 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body("게시물 수정을 성공하였습니다");
     }
     @DeleteMapping("/post/{post_id}")
-    public ResponseEntity<?> removing(@Valid @PathVariable Integer post_id,BindingResult bindingResult,HttpServletRequest request){
+    public ResponseEntity<?> removing(@Valid @PathVariable Long post_id,BindingResult bindingResult,HttpServletRequest request){
         String currentUsername = authService.getCurrentSessionUsername(request);
         //로그인 검사
         if(currentUsername == null){
@@ -71,7 +71,7 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("게시물 삭제를 성공하였습니다");
     }
     @GetMapping("/post/view/{post_id}")
-    public ResponseEntity<DetailPostResponseDto> getPost(@Valid @PathVariable Integer post_id, BindingResult bindingResult, HttpServletRequest request){
+    public ResponseEntity<DetailPostResponseDto> getPost(@Valid @PathVariable Long post_id, BindingResult bindingResult, HttpServletRequest request){
         DetailPostResponseDto responseDto = postService.getPostInfo(post_id);
 
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);

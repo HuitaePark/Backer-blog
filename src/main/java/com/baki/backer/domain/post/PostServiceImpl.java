@@ -30,12 +30,11 @@ public class PostServiceImpl implements PostService{
     /**
      * 게시물 작성
      *
-     * @param requestDto         입력정보
-     * @param userId 현재 세션의 유저 아이디
-     * @return Post 로 유저 닉네임 반환
+     * @param requestDto 입력정보
+     * @param userId     현재 세션의 유저 아이디
      */
     @Override
-    public PostListResponseDto createPost(PostSaveRequestDto requestDto, Integer userId) {
+    public void createPost(PostSaveRequestDto requestDto, Long userId) {
         // 현재 유저의 Member 엔티티 조회
         Member member = memberRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -49,10 +48,6 @@ public class PostServiceImpl implements PostService{
                 .build();
         // 게시글 저장
         postRepository.save(post);
-
-        // DTO로 변환하여 반환
-        return PostListResponseDto.fromEntity(post);
-
     }
 
     /**
@@ -61,20 +56,20 @@ public class PostServiceImpl implements PostService{
      * @param request 수정된 제목이랑 내용,카테고리를 받아서 넘김
      */
     @Override
-    public void updatePost(Integer postId, PostSaveRequestDto request) {
+    public void updatePost(Long postId, PostSaveRequestDto request) {
         Post existingPost = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
         existingPost.updateDto(request);
         postRepository.save(existingPost);
     }
 
     @Override
-    public void deletePost(Integer post_id) {
+    public void deletePost(Long post_id) {
         Post existingPost = postRepository.findById(post_id).orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
         postRepository.delete(existingPost);
     }
 
     @Override
-    public DetailPostResponseDto getPostInfo(Integer post_id) {
+    public DetailPostResponseDto getPostInfo(Long post_id) {
         Post post = postRepository.findPostWithComment(post_id);
         if (post == null) {throw new RuntimeException("게시글을 찾을 수 없습니다.");}
         return new DetailPostResponseDto(post);
@@ -109,7 +104,7 @@ public class PostServiceImpl implements PostService{
         return postRepository.searchPost(keyword,category,pageable);
     }
 
-    public boolean checkWriterEquals(String currentUsername,Integer post_id){
+    public boolean checkWriterEquals(String currentUsername,Long post_id){
         Post existingPost = postRepository.findById(post_id).orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
         String writerUsername = existingPost.getMember().getName();
         return writerUsername.equals(currentUsername);

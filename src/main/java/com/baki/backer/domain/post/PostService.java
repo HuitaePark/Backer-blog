@@ -10,27 +10,25 @@ public interface PostService {
 
     /**
      * 게시글 등록
-     *
-     * @return
      */
-    PostListResponseDto createPost(PostSaveRequestDto request, Integer userId);
+    void createPost(PostSaveRequestDto request, Long userId);
 
     /**
      * 게시글 수정
      *
      *
      */
-    void updatePost(Integer postId, PostSaveRequestDto request);
+    void updatePost(Long postId, PostSaveRequestDto request);
 
     /**
      * 게시글 삭제
      */
-    void deletePost(Integer postId);
+    void deletePost(Long postId);
 
     /**
      * 게시글 1개 조회
      */
-    DetailPostResponseDto getPostInfo(Integer post_id);
+    DetailPostResponseDto getPostInfo(Long post_id);
 
     /**
      * 검색 조건에 따른 게시글 리스트 조회 + 페이징

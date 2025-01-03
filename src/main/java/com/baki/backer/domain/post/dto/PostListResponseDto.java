@@ -15,7 +15,7 @@ public class PostListResponseDto {
 
     // 순서 맞춰서 필드를 선언(굳이 순서는 상관 없지만, 가독성 위해 맞춰줍니다)
     private LocalDateTime create_date;
-    private Integer post_id;
+    private Long post_id;
     private String name;
     private String title;
     private String content;
@@ -26,7 +26,7 @@ public class PostListResponseDto {
      */
 
     public PostListResponseDto(LocalDateTime create_date,
-                               Integer post_id,
+                               Long post_id,
                                String name,
                                String title,
                                String content) {

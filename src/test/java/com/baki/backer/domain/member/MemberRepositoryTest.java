@@ -49,8 +49,8 @@ class MemberRepositoryTest {
         Member member = createMember();
         memberRepository.save(member);
 
-        assertTrue(memberRepository.existsById(1),"존재하는 유저 확인");
-        assertFalse(memberRepository.existsById(2),"존재하지 않는 유저 확인");
+        assertTrue(memberRepository.existsById(1L),"존재하는 유저 확인");
+        assertFalse(memberRepository.existsById(2L),"존재하지 않는 유저 확인");
     }
 
     @Test
@@ -66,7 +66,7 @@ class MemberRepositoryTest {
     void findIdByUsername() {
         Member member = createMember();
         memberRepository.save(member);
-        Integer findMemberId = memberRepository.findIdByUsername("existingUser");
+        Long findMemberId = memberRepository.findIdByUsername("existingUser");
 
         assertEquals(member.getId(), findMemberId);
     }

@@ -23,7 +23,7 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer post_id;
+    private Long post_id;
 
     @Enumerated(EnumType.STRING)
     private Category category_id;

@@ -32,7 +32,7 @@ public class QPost extends EntityPathBase<Post> {
 
     public final com.baki.backer.domain.member.QMember member;
 
-    public final NumberPath<Integer> post_id = createNumber("post_id", Integer.class);
+    public final NumberPath<Long> post_id = createNumber("post_id", Long.class);
 
     public final StringPath title = createString("title");
 

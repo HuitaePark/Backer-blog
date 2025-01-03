@@ -45,7 +45,7 @@ class AuthServiceTest {
         loginRequestDto.setPassword("password123");
 
         Member member = Member.builder()
-                .id(1)
+                .id(1L)
                 .username("testuser")
                 .password("encodedPassword123")
                 .name("Test User")
@@ -79,7 +79,7 @@ class AuthServiceTest {
     @Test
     void getLoginMemberByUserId() {
         authService.login(loginRequestDto);
-        Member loginMember = authService.getLoginMemberByUserId(1);
+        Member loginMember = authService.getLoginMemberByUserId(1L);
         assertNotNull(loginMember);
     }
 

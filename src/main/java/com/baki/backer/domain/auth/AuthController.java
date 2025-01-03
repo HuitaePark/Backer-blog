@@ -64,7 +64,7 @@ public class AuthController {
         return ResponseEntity.ok("로그아웃 성공");
     }
     @GetMapping("/admin")
-    public ResponseEntity<?> adminPage(@SessionAttribute(name = "username", required = false) Integer Id){
+    public ResponseEntity<?> adminPage(@SessionAttribute(name = "username", required = false) Long Id){
         if(Id == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
