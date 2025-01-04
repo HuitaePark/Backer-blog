@@ -17,7 +17,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/post")
 public class PostController {
@@ -40,7 +40,7 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).body("게시물 작성을 성공하였습니다");
     }
 
-    @PatchMapping("/post/{post_id}")
+    @PatchMapping("/{post_id}")
     public ResponseEntity<?> updating(@Valid @RequestBody PostSaveRequestDto requestDto, BindingResult bindingResult, HttpServletRequest request, @PathVariable Long post_id){
         String currentUsername = authService.getCurrentSessionUsername(request);
         //로그인 검사
@@ -55,7 +55,7 @@ public class PostController {
         postService.updatePost(post_id,requestDto);
         return ResponseEntity.status(HttpStatus.OK).body("게시물 수정을 성공하였습니다");
     }
-    @DeleteMapping("/post/{post_id}")
+    @DeleteMapping("/{post_id}")
     public ResponseEntity<?> removing(@Valid @PathVariable Long post_id,BindingResult bindingResult,HttpServletRequest request){
         String currentUsername = authService.getCurrentSessionUsername(request);
         //로그인 검사
@@ -70,7 +70,7 @@ public class PostController {
         postService.deletePost(post_id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("게시물 삭제를 성공하였습니다");
     }
-    @GetMapping("/post/view/{post_id}")
+    @GetMapping("/view/{post_id}")
     public ResponseEntity<DetailPostResponseDto> getPost(@Valid @PathVariable Long post_id, BindingResult bindingResult, HttpServletRequest request){
         DetailPostResponseDto responseDto = postService.getPostInfo(post_id);
 
@@ -86,7 +86,7 @@ public class PostController {
      * @param sort     정렬 기준 (예: "create_date,desc")
      * @return 페이징 처리된 게시물 목록
      */
-    @GetMapping("/post/list")
+    @GetMapping("/list")
     public Page<PostListResponseDto> getPostList(
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "category", required = false) String category,

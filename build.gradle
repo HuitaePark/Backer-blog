@@ -46,7 +46,8 @@ dependencies {
 
 	// AssertJ (선택사항, 더 나은 어서션 제공)
 	testImplementation 'org.assertj:assertj-core:3.23.1'
-
+	//스웨거
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 	//queryDSL 설정
 	implementation 'com.querydsl:querydsl-apt:5.1.0'
 	implementation 'com.querydsl:querydsl-jpa:5.1.0:jakarta'
