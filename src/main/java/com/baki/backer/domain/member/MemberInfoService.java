@@ -1,17 +1,24 @@
 package com.baki.backer.domain.member;
 
+import com.baki.backer.domain.comment.CommentRepository;
 import com.baki.backer.domain.member.Member;
 import com.baki.backer.domain.member.MemberRepository;
-import com.baki.backer.domain.member.dto.MemberInfoDto;
-import com.baki.backer.domain.member.dto.MemberUpdateDto;
+import com.baki.backer.domain.member.dto.*;
+import com.baki.backer.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class MemberInfoService {
 
     private final MemberRepository memberRepository;
+    private PostRepository postRepository;
+    private CommentRepository commentRepository;
+
 
     /**
      * 단일 멤버 조회
@@ -48,5 +55,28 @@ public class MemberInfoService {
         Member saved = memberRepository.save(memberInSession);
 
         return new MemberInfoDto(saved);
+    }
+
+    public MyPageResponseDto getPostAndComments(String username){
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다: " + username));
+
+        // member를 통해 게시글 목록, 댓글 목록 조회
+        var postList = postRepository.findAllByMember(member);
+        var commentList = commentRepository.findAllByMember(member);
+
+        // DTO 변환
+        List<PostResponseDto> postDtos = postList.stream()
+                .map(PostResponseDto::of)
+                .toList();
+
+        List<CommentResponseDto> commentDtos = commentList.stream()
+                .map(CommentResponseDto::of)
+                .toList();
+
+        return MyPageResponseDto.builder()
+                .posts(postDtos)
+                .comments(commentDtos)
+                .build();
     }
 }
