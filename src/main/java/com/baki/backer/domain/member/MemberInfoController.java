@@ -80,33 +80,43 @@ public class MemberInfoController {
             @PathVariable("id") Long memberId,
             HttpServletRequest request
     ) {
-        // 1) 세션 가져오기
-        HttpSession session = request.getSession(false);
-        if (session == null) {
-            // 세션이 없으면 로그인 안 되어 있는 상태
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        try {
+            // 1) 세션 가져오기
+            HttpSession session = request.getSession(false);
+            if (session == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(null); // 또는 에러 메시지 포함
+            }
+
+            // 2) 세션에서 username 가져오기
+            String username = (String) session.getAttribute("username");
+            if (username == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(null); // 또는 에러 메시지 포함
+            }
+
+            // 3) DB에서 세션 사용자 정보를 가져오기
+            Member member = memberRepository.findByUsername(username)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다: " + username));
+
+            // 4) ID 일치 여부 확인
+            if (!member.getId().equals(memberId)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(null); // 또는 에러 메시지 포함
+            }
+
+            // 5) 서비스 호출
+            MyPageResponseDto response = memberInfoService.getPostAndComments(username);
+            return ResponseEntity.ok(response);
+
+        } catch (IllegalArgumentException e) {
+            // 예외 발생 시 에러 응답 전송
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(null); // 또는 에러 메시지 포함
+        } catch (Exception e) {
+            // 일반 예외 처리
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null); // 또는 에러 메시지 포함
         }
-
-        // 2) 세션에서 username 가져오기 (또는 userId가 있다면 userId)
-        String username = (String) session.getAttribute("username");
-        if (username == null) {
-            // username이 없으면 역시 로그인 안 된 상태
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        // 3) DB에서 세션 사용자 정보를 가져와서 PK(id)를 비교
-        //    여기서는 예시로 username을 통해 Member 엔티티를 조회한다고 가정
-        Member member = memberRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다: " + username));
-
-        // 4) 현재 로그인한 멤버의 id와, 경로변수(memberId)가 일치하는지 확인
-        if (!member.getId().equals(memberId)) {
-            // 불일치하면 권한 없음 응답(403 등)
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-
-        // 5) 여기까지 통과하면 본인 정보가 맞으므로 서비스 호출
-        MyPageResponseDto response = memberInfoService.getPostAndComments(username);
-        return ResponseEntity.ok(response);
     }
 }

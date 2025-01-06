@@ -49,7 +49,7 @@ public class PostController {
 
         // 정상 로직
         postService.createPost(postSaveRequestDto, userId);
-        return ResponseEntity.status(HttpStatus.CREATED).body("게시물 작성을 성공하였습니다");
+        return ResponseEntity.status(HttpStatus.CREATED).body("게시물 작성을 성공하였습니다.");
     }
 
     @PatchMapping("/{post_id}")
@@ -75,7 +75,7 @@ public class PostController {
         }
 
         postService.updatePost(post_id, requestDto);
-        return ResponseEntity.status(HttpStatus.OK).body("게시물 수정을 성공하였습니다");
+        return ResponseEntity.status(HttpStatus.OK).body("게시물 수정을 성공하였습니다.");
     }
 
     @DeleteMapping("/{post_id}")
@@ -96,7 +96,7 @@ public class PostController {
         }
 
         postService.deletePost(post_id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("게시물 삭제를 성공하였습니다");
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("게시물 삭제를 성공하였습니다.");
     }
 
     @GetMapping("/view/{post_id}")

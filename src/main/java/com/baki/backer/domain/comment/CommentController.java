@@ -128,6 +128,6 @@ public class CommentController {
         // 5) 서비스에서 삭제 처리
         commentService.deleteComment(commentId);
 
-        return ResponseEntity.ok("댓글 삭제에 성공하였습니다.");
+        return ResponseEntity.ok("댓글 삭제를 성공하였습니다.");
     }
 }
