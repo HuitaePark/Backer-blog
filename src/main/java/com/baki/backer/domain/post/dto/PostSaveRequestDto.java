@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 
 public record PostSaveRequestDto(@NotBlank(message = "제목을 입력해야 합니다.") String title,
                                  @NotBlank(message = "내용을 입력해야 합니다.") String content,
-                                 @NotBlank(message = "카테고리를 선택해야 합니다.") Category category_id) {
+                                 Category category_id) {
     public Post toEntity(){
         return Post.builder()
                 .title(this.title)

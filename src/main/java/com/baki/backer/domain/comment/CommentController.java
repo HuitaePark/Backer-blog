@@ -54,7 +54,7 @@ public class CommentController {
         Long userId = memberRepository.findIdByUsername(currentUsername);
 
         // 3) 댓글이 달릴 게시글 ID를 DTO에서 가져온다고 가정
-        Long postId = commentRequestDto.getId();
+        Long postId = commentRequestDto.getPostId();
         if (postId == null) {
             return ResponseEntity.badRequest().body("postId가 누락되었습니다.");
         }

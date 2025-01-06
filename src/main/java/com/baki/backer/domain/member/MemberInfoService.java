@@ -1,24 +1,21 @@
 package com.baki.backer.domain.member;
 
 import com.baki.backer.domain.comment.CommentRepository;
-import com.baki.backer.domain.member.Member;
-import com.baki.backer.domain.member.MemberRepository;
 import com.baki.backer.domain.member.dto.*;
 import com.baki.backer.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
 public class MemberInfoService {
 
     private final MemberRepository memberRepository;
-    private PostRepository postRepository;
-    private CommentRepository commentRepository;
-
+    private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
 
     /**
      * 단일 멤버 조회

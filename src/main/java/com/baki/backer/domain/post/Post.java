@@ -25,7 +25,7 @@ public class Post {
     @Column(name = "id")
     private Long post_id;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     private Category category_id;
 
     @Column(name = "title",nullable = false)
