@@ -1,5 +1,6 @@
 package com.baki.backer.domain.member;
 
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,8 +50,9 @@ class MemberRepositoryTest {
         Member member = createMember();
         memberRepository.save(member);
 
-        assertTrue(memberRepository.existsById(1L),"존재하는 유저 확인");
-        assertFalse(memberRepository.existsById(2L),"존재하지 않는 유저 확인");
+        Long savedMemberId = member.getId(); // 저장된 엔티티의 실제 ID
+        assertTrue(memberRepository.existsById(savedMemberId), "존재하는 유저 확인");
+        assertFalse(memberRepository.existsById(savedMemberId + 1), "존재하지 않는 유저 확인");
     }
 
     @Test

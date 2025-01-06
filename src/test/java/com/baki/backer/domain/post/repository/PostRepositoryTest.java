@@ -67,7 +67,7 @@ class PostRepositoryTest {
 
     @Test
     void findPostWithComment() {
-        Post findpost = postRepository.findPostWithComment(1);
+        Post findpost = postRepository.findPostWithComment(1L);
         assertNotNull(findpost, "findPost가 null이 아니어야 함");
         assertEquals(findpost.getTitle(), post.getTitle(),"제목이 일치해야함");
     }

@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class PostServiceImplTest {
     @Autowired
     private PostRepository postRepository;
@@ -76,11 +78,11 @@ class PostServiceImplTest {
         );
 
         // when
-        postService.updatePost(1, postSaveRequestDto);
+        postService.updatePost(1L, postSaveRequestDto);
 
         // then
         // 1) 엔티티 조회
-        Post updatedPost = postRepository.findById(1).orElse(null);
+        Post updatedPost = postRepository.findById(1L).orElse(null);
 
         // 2) null 체크
         assertNotNull(updatedPost,
@@ -94,14 +96,14 @@ class PostServiceImplTest {
 
     @Test
     void deletePost() {
-        postService.deletePost(1);
-        assertNull(postRepository.findById(1).orElse(null));
+        postService.deletePost(1L);
+        assertNull(postRepository.findById(1L).orElse(null));
     }
 
     @Test
     void getPostInfo() {
         // given
-        Integer postId = post.getPost_id(); // 위에서 저장된 post의 PK
+        Long postId = post.getPost_id(); // 위에서 저장된 post의 PK
 
         // when
         DetailPostResponseDto result = postService.getPostInfo(postId);
