@@ -35,8 +35,3 @@ out/
 
 ### VS Code ###
 .vscode/
-/HTTP/
-
-### .env ###
-.env*
-
