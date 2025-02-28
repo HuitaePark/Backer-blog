@@ -14,6 +14,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.*;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/session")
@@ -52,7 +54,12 @@ public class AuthController {
         session.setAttribute("username",member.getUsername());
         session.setMaxInactiveInterval(1800);
 
-        return ResponseEntity.ok("로그인성공");
+        // 응답으로 유저 ID와 이름 반환
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", member.getId());
+        response.put("username", member.getUsername());
+        response.put("message", "로그인 성공");
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/logout")
