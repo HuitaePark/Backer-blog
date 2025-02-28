@@ -17,7 +17,7 @@ public class CommentRequestDto {
     private Long postId;
 
     public CommentRequestDto(Comment comment) {
-        this.id = comment.getComment_id();
+        this.id = comment.getId();
         this.content = comment.getContent();
 
         // LAZY 로딩 문제 방지: service/repository 단에서 fetch join으로 member와 post 미리 로딩
@@ -26,7 +26,7 @@ public class CommentRequestDto {
         }
 
         if (comment.getPost() != null) {
-            this.postId = comment.getPost().getPost_id();      // 엔티티에서 post_id 가져오기// 엔티티에서 title 가져오기
+            this.postId = comment.getPost().getId();      // 엔티티에서 post_id 가져오기// 엔티티에서 title 가져오기
         }
     }
 }

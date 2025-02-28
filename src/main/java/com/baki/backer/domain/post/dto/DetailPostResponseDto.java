@@ -19,17 +19,13 @@ public class DetailPostResponseDto{
     private String name;
     private Category category_id;
     private LocalDateTime create_date;
-    private List<CommentRequestDto> comments;
 
     public DetailPostResponseDto(Post post) {
         this.category_id = post.getCategory_id();
         this.content = post.getContent();
-        this.id = post.getPost_id();
+        this.id = post.getId();
         this.title = post.getTitle();
         this.name = post.getMember().getName();
         this.create_date=post.getCreate_Date();
-        this.comments = post.getComments().stream()
-                .map(CommentRequestDto::new)
-                .collect(Collectors.toList());
     }
 }

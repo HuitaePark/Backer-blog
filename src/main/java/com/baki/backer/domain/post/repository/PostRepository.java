@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post,Long>,CustomPostRepository {
-    @Query("SELECT p FROM Post p LEFT JOIN  fetch p.comments where p.post_id = :post_id")
+    @Query("SELECT p FROM Post p LEFT JOIN  fetch p.comments where p.id = :post_id")
     Post findPostWithComment(@Param("post_id") Long post_id);
 
     List<Post> findAllByMember(Member member);

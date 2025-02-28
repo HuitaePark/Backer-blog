@@ -42,7 +42,7 @@ public class CustomPostRepositoryImpl implements CustomPostRepository{
         List<PostListResponseDto> content = jpaQueryFactory
                 .select(Projections.constructor(PostListResponseDto.class,
                         post.create_Date,
-                        post.post_id,
+                        post.id,
                         member.name,
                         post.title,
                         post.content))

@@ -8,8 +8,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 @Getter
@@ -23,7 +22,7 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long post_id;
+    private Long id;
 
     @Enumerated(EnumType.ORDINAL)
     private Category category_id;
@@ -38,13 +37,13 @@ public class Post {
     @Column(updatable = false)
     private LocalDateTime create_Date;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<Comment> comments = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_member_id", nullable = false)
     private Member member;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)  // 포스트는 여러 댓글을 가질 수 있음
+    private List<Comment> comments = new ArrayList<>();
 
     public void updateDto(PostSaveRequestDto request) {
         this.title = request.title();

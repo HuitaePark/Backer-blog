@@ -11,9 +11,9 @@ public record CommentResponseDto(
 ) {
     public static CommentResponseDto of(Comment comment) {
         return CommentResponseDto.builder()
-                .commentId(comment.getComment_id())
+                .commentId(comment.getId())
                 .content(comment.getContent())
-                .postId(comment.getPost().getPost_id())
+                .postId(comment.getPost().getId())
                 .build();
     }
 }

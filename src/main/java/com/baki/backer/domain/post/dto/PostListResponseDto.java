@@ -44,7 +44,7 @@ public class PostListResponseDto {
     public static PostListResponseDto fromEntity(Post post) {
         return new PostListResponseDto(
                 post.getCreate_Date(),          // LocalDateTime
-                post.getPost_id(),             // Integer (엔티티가 int/Integer라 가정)
+                post.getId(),             // Integer (엔티티가 int/Integer라 가정)
                 post.getMember().getName(),    // String
                 post.getTitle(),               // String
                 post.getContent()              // String

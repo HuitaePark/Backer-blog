@@ -30,9 +30,9 @@ public class QPost extends EntityPathBase<Post> {
 
     public final DateTimePath<java.time.LocalDateTime> create_Date = createDateTime("create_Date", java.time.LocalDateTime.class);
 
-    public final com.baki.backer.domain.member.QMember member;
+    public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final NumberPath<Long> post_id = createNumber("post_id", Long.class);
+    public final com.baki.backer.domain.member.QMember member;
 
     public final StringPath title = createString("title");
 

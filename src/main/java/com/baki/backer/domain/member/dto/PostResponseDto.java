@@ -15,7 +15,7 @@ public record PostResponseDto(
 ) {
     public static PostResponseDto of(Post post) {
         return PostResponseDto.builder()
-                .postId(post.getPost_id())
+                .postId(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .category(post.getCategory_id().name())

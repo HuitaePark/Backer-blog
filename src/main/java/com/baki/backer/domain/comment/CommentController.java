@@ -2,6 +2,7 @@ package com.baki.backer.domain.comment;
 
 import com.baki.backer.domain.auth.AuthService;
 import com.baki.backer.domain.comment.dto.CommentRequestDto;
+import com.baki.backer.domain.comment.dto.CommentResponseDto;
 import com.baki.backer.domain.member.MemberRepository;
 import com.baki.backer.domain.post.Post;
 import com.baki.backer.domain.post.repository.PostRepository;
@@ -13,8 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/comment")  // 일반적으로 컨트롤러 레벨에서 RequestMapping 지정
+@RequestMapping  // 일반적으로 컨트롤러 레벨에서 RequestMapping 지정
 public class CommentController {
 
     private final CommentService commentService;
@@ -32,12 +35,15 @@ public class CommentController {
         this.memberRepository = memberRepository;
         this.postRepository = postRepository;
     }
-
+    @GetMapping("/post/{post_id}/comments")
+    public List<CommentResponseDto> findAllComment(@PathVariable Long post_id){
+        return commentService.getAllComment(post_id);
+    }
     /**
      * 댓글 생성
      * POST /comment
      */
-    @PostMapping
+    @PostMapping("/comment")
     public ResponseEntity<?> createComment(
             @Valid @RequestBody CommentRequestDto commentRequestDto,
             BindingResult bindingResult,
@@ -119,7 +125,7 @@ public class CommentController {
 
         // 4) 게시글이 실제로 존재하는지 확인
         //    - DB FK 제약이 없으므로, 혹시라도 postId가 무효일 수 있어서 확인
-        if (!postRepository.existsById(post.getPost_id())) {
+        if (!postRepository.existsById(post.getId())) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("게시글이 이미 삭제되었거나 존재하지 않습니다.");
         }
 

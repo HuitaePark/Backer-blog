@@ -22,9 +22,9 @@ public class QComment extends EntityPathBase<Comment> {
 
     public static final QComment comment = new QComment("comment");
 
-    public final NumberPath<Long> comment_id = createNumber("comment_id", Long.class);
-
     public final StringPath content = createString("content");
+
+    public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final com.baki.backer.domain.member.QMember member;
 
