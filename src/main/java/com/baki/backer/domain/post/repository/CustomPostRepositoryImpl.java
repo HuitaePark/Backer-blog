@@ -17,6 +17,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -92,23 +93,40 @@ public class CustomPostRepositoryImpl implements CustomPostRepository{
         }
     private OrderSpecifier<?>[] getOrderSpecifier(org.springframework.data.domain.Sort sort, QPost post) {
         List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
-
-        sort.forEach(order -> {
-            Order direction = order.isAscending() ? Order.ASC : Order.DESC;
-            switch (order.getProperty()) {
-                case "create_date":
-                    orderSpecifiers.add(new OrderSpecifier<>(direction, post.create_Date));
+        if (sort.isUnsorted()) {
+            // 정렬 조건이 없으면 기본 정렬: 생성일 DESC + id DESC
+            orderSpecifiers.add(new OrderSpecifier<>(Order.DESC, post.create_Date));
+            orderSpecifiers.add(new OrderSpecifier<>(Order.DESC, post.id));
+        } else {
+            // API에서 전달받은 정렬 조건 적용
+            sort.forEach(order -> {
+                Order direction = order.isAscending() ? Order.ASC : Order.DESC;
+                String property = order.getProperty();
+                switch (property) {
+                    case "create_Date":
+                        orderSpecifiers.add(new OrderSpecifier<>(direction, post.create_Date));
+                        break;
+                    case "title":
+                        orderSpecifiers.add(new OrderSpecifier<>(direction, post.title));
+                        break;
+                    // 필요한 경우 다른 속성에 대한 케이스 추가
+                    default:
+                        orderSpecifiers.add(new OrderSpecifier<>(direction, post.create_Date));
+                }
+            });
+            // API 정렬 조건에 id 정렬이 포함되어 있지 않다면 tie-breaker로 id DESC 추가
+            boolean containsId = false;
+            for (Sort.Order order : sort) {
+                if ("id".equals(order.getProperty()) || "post_id".equals(order.getProperty())) {
+                    containsId = true;
                     break;
-                case "title":
-                    orderSpecifiers.add(new OrderSpecifier<>(direction, post.title));
-                    break;
-                // Add more cases as needed
-                default:
-                    // Default sorting
-                    orderSpecifiers.add(new OrderSpecifier<>(direction, post.create_Date));
+                }
             }
-        });
-
+            if (!containsId) {
+                orderSpecifiers.add(new OrderSpecifier<>(Order.DESC, post.id));
+            }
+        }
         return orderSpecifiers.toArray(new OrderSpecifier[0]);
     }
-    }
+
+}

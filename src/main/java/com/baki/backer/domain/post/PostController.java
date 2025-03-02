@@ -126,7 +126,7 @@ public class PostController {
             @RequestParam(value = "category", required = false) String category,
             @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(value = "size", required = false, defaultValue = "20") Integer size,
-            @RequestParam(value = "sort", required = false, defaultValue = "create_date,desc") String sort
+            @RequestParam(value = "sort", required = false, defaultValue = "create_Date,desc") String sort
     ) {
         return postService.getPostList(keyword, category, page, size, sort);
     }

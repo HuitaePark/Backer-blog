@@ -14,6 +14,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -85,23 +87,32 @@ public class PostServiceImpl implements PostService{
      * @return 페이징 처리된 게시물 목록
      */
     @Override
-    public Page<PostListResponseDto> getPostList(String keyword,String category,Integer page,Integer size,String sort) {
-        //페이지는 0부터 시작하므로 1을 빼준다
-        int pageNumber = (page == null || page<1) ? 0 : page -1;
-        int pageSize = (size == null || size <1) ? 20 : size;
+    public Page<PostListResponseDto> getPostList(String keyword, String category, Integer page, Integer size, String sort) {
+        int pageNumber = (page == null || page < 1) ? 0 : page - 1;
+        int pageSize = (size == null || size < 1) ? 20 : size;
+
+        System.out.println("입력받은 sort 값: " + sort); // 디버깅 로그
 
         // 기본 정렬: create_date 내림차순
-        Sort sortOrder = Sort.by("create_date").descending();
-        if(sort != null && sort.isEmpty()){
+        Sort sortOrder = Sort.by("create_Date").descending(); // 대문자 D로 맞춤
+
+        if(sort != null && !sort.isEmpty()){ // 조건문 수정 (! 추가)
+            System.out.println("sort 파싱 시작");
             String[] sortParams = sort.split(",");
-            if (sortParams.length ==2){
-                String sortFiled = sortParams[0];
+            System.out.println("분할된 파라미터: " + Arrays.toString(sortParams));
+
+            if (sortParams.length == 2){
+                String sortField = sortParams[0];
                 Sort.Direction direction = sortParams[1].equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-                sortOrder = Sort.by(direction,sortFiled);
+                sortOrder = Sort.by(direction, sortField);
+                System.out.println("적용된 정렬: " + direction + " " + sortField);
             }
         }
-        Pageable pageable = PageRequest.of(pageNumber,pageSize,sortOrder);
-        return postRepository.searchPost(keyword,category,pageable);
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sortOrder);
+        System.out.println("최종 정렬 정보: " + pageable.getSort());
+
+        return postRepository.searchPost(keyword, category, pageable);
     }
 
     public boolean checkWriterEquals(String currentUsername,Long post_id){
