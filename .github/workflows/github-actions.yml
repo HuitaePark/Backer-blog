@@ -50,7 +50,7 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           
           ssh-keyscan -t rsa $OCI_HOST >> ~/.ssh/known_hosts
-          ssh -i ~/.ssh/id_rsa $DEPLOY_USER@$OCI_HOST "mkdir -p /app/deploy/"
+          ssh -i ~/.ssh/id_rsa $DEPLOY_USER@$OCI_HOST "sudo mkdir -p /app/deploy && sudo chown -R $DEPLOY_USER:$DEPLOY_USER /app/deploy"
           scp -i ~/.ssh/id_rsa build/libs/*.jar $DEPLOY_USER@$OCI_HOST:/app/deploy/
           ssh -i ~/.ssh/id_rsa $DEPLOY_USER@$OCI_HOST \
             "sudo /bin/bash -c 'systemctl restart Backer-blog && journalctl -u Backer-blog -n 50'"
