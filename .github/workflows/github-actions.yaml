@@ -45,29 +45,27 @@ jobs:
           DEPLOY_USER: ${{ secrets.OCI_DEPLOY_USER }}
           SSH_PRIVATE_KEY: ${{ secrets.OCI_SSH_KEY }}
         run: |
-          # SSH 설정
+        # SSH 설정
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -t rsa $OCI_HOST >> ~/.ssh/known_hosts
 
- 
+        # 디렉토리 생성
           ssh -i ~/.ssh/id_rsa $DEPLOY_USER@$OCI_HOST "mkdir -p ~/app_deploy"
 
-         
+        # JAR 파일 전송
           scp -i ~/.ssh/id_rsa build/libs/Backer-blog-0.0.1-SNAPSHOT.jar $DEPLOY_USER@$OCI_HOST:~/app_deploy/Backer-blog-0.0.1-SNAPSHOT.jar
 
-        
-          ssh -i ~/.ssh/id_rsa $DEPLOY_USER@$OCI_HOST <<'EOF'
-          
+        # 원격 배포 스크립트 실행
+          ssh -i ~/.ssh/id_rsa $DEPLOY_USER@$OCI_HOST /bin/bash <<- 'EOF'
             PID=$(pgrep -f 'Backer-blog-0.0.1-SNAPSHOT.jar')
             if [ -n "$PID" ]; then
               echo "기존 프로세스(PID: $PID)를 종료합니다."
               kill -15 $PID
-              sleep 5  # 정상 종료를 기다립니다.
+              sleep 5
             fi
-
             cd ~/app_deploy
             nohup java -jar Backer-blog-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
             echo "새로운 프로세스가 백그라운드에서 실행되었습니다."
-         EOF
+          EOF

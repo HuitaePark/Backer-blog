@@ -101,7 +101,7 @@ public class CommentController {
         //    - 현재 구현된 서비스 메서드는 (Long commentId, String newContent)를 받음
         commentService.updateComment(commentId, commentRequestDto.getContent());
 
-        return ResponseEntity.ok(new SuccessMessageKit("댓글 수정에 성공하였습니다."));
+        return ResponseEntity.ok(new SuccessMessageKit("success","댓글 수정에 성공하였습니다."));
     }
 
     /**
@@ -140,6 +140,6 @@ public class CommentController {
         // 5) 서비스에서 삭제 처리
         commentService.deleteComment(commentId);
 
-        return ResponseEntity.ok("댓글 삭제를 성공하였습니다.");
+        return ResponseEntity.ok(new SuccessMessageKit("success","댓글 삭제를 성공하였습니다."));
     }
 }
