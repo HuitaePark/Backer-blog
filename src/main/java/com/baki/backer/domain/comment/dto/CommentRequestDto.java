@@ -13,9 +13,6 @@ public class CommentRequestDto {
     // Member 정보
     private Long memberId;
 
-    // Post 정보
-    private Long postId;
-
     public CommentRequestDto(Comment comment) {
         this.id = comment.getId();
         this.content = comment.getContent();
@@ -25,8 +22,5 @@ public class CommentRequestDto {
             this.memberId = comment.getMember().getId();
         }
 
-        if (comment.getPost() != null) {
-            this.postId = comment.getPost().getId();      // 엔티티에서 post_id 가져오기// 엔티티에서 title 가져오기
-        }
     }
 }

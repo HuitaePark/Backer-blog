@@ -6,6 +6,7 @@ import com.baki.backer.domain.comment.dto.CommentResponseDto;
 import com.baki.backer.domain.member.MemberRepository;
 import com.baki.backer.domain.post.Post;
 import com.baki.backer.domain.post.repository.PostRepository;
+import com.baki.backer.global.common.SuccessMessageKit;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,15 +40,21 @@ public class CommentController {
     public List<CommentResponseDto> findAllComment(@PathVariable Long post_id){
         return commentService.getAllComment(post_id);
     }
+
     /**
-     * 댓글 생성
-     * POST /comment
+     *
+     * @param commentRequestDto
+     * @param bindingResult
+     * @param request
+     * @param post_id
+     * @return
      */
-    @PostMapping("/comment")
+    @PostMapping("/post/{post_id}/comment")
     public ResponseEntity<?> createComment(
             @Valid @RequestBody CommentRequestDto commentRequestDto,
             BindingResult bindingResult,
-            HttpServletRequest request
+            HttpServletRequest request,
+            @PathVariable Long post_id
     ) {
         // 1) DTO 유효성 검사
         if (bindingResult.hasErrors()) {
@@ -60,13 +67,12 @@ public class CommentController {
         Long userId = memberRepository.findIdByUsername(currentUsername);
 
         // 3) 댓글이 달릴 게시글 ID를 DTO에서 가져온다고 가정
-        Long postId = commentRequestDto.getPostId();
-        if (postId == null) {
+        if (post_id == null) {
             return ResponseEntity.badRequest().body("postId가 누락되었습니다.");
         }
 
         // 4) 서비스 호출 (존재하지 않는 회원/게시글이면 서비스에서 예외 처리)
-        commentService.createComment(commentRequestDto, userId, postId);
+        commentService.createComment(commentRequestDto, userId, post_id);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("댓글 작성을 성공하였습니다.");
     }
@@ -95,7 +101,7 @@ public class CommentController {
         //    - 현재 구현된 서비스 메서드는 (Long commentId, String newContent)를 받음
         commentService.updateComment(commentId, commentRequestDto.getContent());
 
-        return ResponseEntity.ok("댓글 수정에 성공하였습니다.");
+        return ResponseEntity.ok(new SuccessMessageKit("댓글 수정에 성공하였습니다."));
     }
 
     /**
