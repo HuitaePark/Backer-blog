@@ -59,11 +59,11 @@ jobs:
 
          
           ssh -i ~/.ssh/id_rsa $DEPLOY_USER@$OCI_HOST "sudo bash -c 'cat > /etc/systemd/system/backer-blog.service << EOF
-          [ Unit ]
+          [Unit]
           Description=Backer Blog Application
           After=network.target
-    
-          [ Service ]
+  
+          [Service]
           User=$DEPLOY_USER
           WorkingDirectory=/home/$DEPLOY_USER/app_deploy
           ExecStart=/usr/bin/java -jar app.jar
@@ -71,10 +71,9 @@ jobs:
           TimeoutStopSec=10
           Restart=on-failure
           RestartSec=5
-    
-          [ Install ]
+          
+          [Install]
           WantedBy=multi-user.target
-          EOF'"
       
     
           ssh -i ~/.ssh/id_rsa $DEPLOY_USER@$OCI_HOST "sudo systemctl daemon-reload && sudo systemctl enable backer-blog && sudo systemctl restart backer-blog && sudo journalctl -u backer-blog -n 50"
