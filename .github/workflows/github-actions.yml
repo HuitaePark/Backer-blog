@@ -43,3 +43,7 @@ jobs:
           scp -i ~/.ssh/id_rsa build/libs/*.jar $DEPLOY_USER@$OCI_HOST:/app/deploy/
           ssh -i ~/.ssh/id_rsa $DEPLOY_USER@$OCI_HOST \
             "sudo /bin/bash -c 'systemctl restart Backer-blog && journalctl -u Backer-blog -n 50'"
+      - name: Debug environment variables
+        run: |
+          echo "OCI_HOST: $OCI_HOST"
+          echo "DEPLOY_USER: $DEPLOY_USER"
