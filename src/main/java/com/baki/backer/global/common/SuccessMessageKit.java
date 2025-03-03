@@ -1,12 +1,5 @@
 package com.baki.backer.global.common;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
-@AllArgsConstructor
-public class SuccessMessageKit {
-    private final String message;
+public record SuccessMessageKit(String status,String message) {
+    
 }

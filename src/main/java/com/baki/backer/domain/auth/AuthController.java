@@ -37,7 +37,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
         }
         authService.join(joinRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessMessageKit("회원 가입이 완료되었습니다."));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessMessageKit("success","회원 가입이 완료되었습니다."));
     }
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletRequest httpServletRequest){
@@ -53,7 +53,7 @@ public class AuthController {
         session.setAttribute("username",member.getUsername());
         session.setMaxInactiveInterval(1800);
 
-        return ResponseEntity.ok(new SuccessMessageKit("로그인 성공"));
+        return ResponseEntity.ok(new SuccessMessageKit("success","로그인 성공"));
     }
 
     @PostMapping("/logout")
@@ -76,6 +76,6 @@ public class AuthController {
         if(!loginMember.getUser_role().equals(MemberRole.ADMIN)){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("권한이 없습니다.");
         }
-        return ResponseEntity.ok(new SuccessMessageKit("어드민 접근 성공"));
+        return ResponseEntity.ok(new SuccessMessageKit("success","어드민 접근 성공"));
     }
 }
