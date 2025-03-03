@@ -30,6 +30,15 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew clean build -x test
 
+      - name: Create .env file with secrets
+        run: |
+          echo "DB_URL=${{ secrets.DB_URL }}" >> .env
+          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+          echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> .env
+          echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> .env
+          echo "REDIS_PORT=${{ secrets.REDIS_PORT }}" >> .env
+
       - name: Secure Deploy
         env:
           OCI_HOST: ${{ secrets.OCI_DEPLOY_HOST }}
@@ -43,6 +52,7 @@ jobs:
           scp -i ~/.ssh/id_rsa build/libs/*.jar $DEPLOY_USER@$OCI_HOST:/app/deploy/
           ssh -i ~/.ssh/id_rsa $DEPLOY_USER@$OCI_HOST \
             "sudo /bin/bash -c 'systemctl restart Backer-blog && journalctl -u Backer-blog -n 50'"
+
       - name: Debug environment variables
         run: |
           echo "OCI_HOST: $OCI_HOST"
