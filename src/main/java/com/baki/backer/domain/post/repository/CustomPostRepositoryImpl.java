@@ -87,7 +87,7 @@ public class CustomPostRepositoryImpl implements CustomPostRepository{
             Category categoryEnum = Category.valueOf(Integer.parseInt(category));
             return post.category_id.eq(categoryEnum);
         } catch (IllegalArgumentException e) {
-            // Handle invalid category value, possibly log the exception
+            // Handle invalid category value, possibly log the error
             return null;
         }
         }

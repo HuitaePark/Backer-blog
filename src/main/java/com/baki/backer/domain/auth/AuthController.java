@@ -4,7 +4,10 @@ import com.baki.backer.domain.auth.dto.JoinRequestDto;
 import com.baki.backer.domain.auth.dto.LoginRequestDto;
 import com.baki.backer.domain.member.Member;
 import com.baki.backer.domain.member.MemberRole;
-import com.baki.backer.global.common.SuccessMessageKit;
+import com.baki.backer.global.common.ApiResponseDto;
+import com.baki.backer.global.common.SuccessMessageDto;
+import com.baki.backer.global.error.ErrorResponse;
+import com.baki.backer.global.util.ResponseUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -23,28 +26,33 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/join")
-    public ResponseEntity<?> join(@Valid @RequestBody JoinRequestDto joinRequestDto, BindingResult bindingResult){
+    public ResponseEntity<ApiResponseDto<?>> join(@Valid @RequestBody JoinRequestDto joinRequestDto, BindingResult bindingResult){
         if(authService.checkLoginIdDuplicate(joinRequestDto.getUsername())){
-            bindingResult.addError(new FieldError("joinRequestDto","username","로그인 아이디가 중복됩니다."));
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.CONFLICT, "중복된 아이디 입니다.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ResponseUtil.error(errorResponse));
         }
         if(authService.checkNameDuplicate(joinRequestDto.getName())){
-            bindingResult.addError(new FieldError("joinRequestDto","name","이름이 중복됩니다."));
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.CONFLICT, "중복된 이름 입니다.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ResponseUtil.error(errorResponse));
         }
         if(!joinRequestDto.getPassword().equals(joinRequestDto.getPasswordCheck())){
-            bindingResult.addError(new FieldError("joinRequestDto","passwordCheck","비밀번호가 일치하지 않습니다."));
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseUtil.error(errorResponse));
         }
         if(bindingResult.hasErrors()){
-            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
+            ErrorResponse errorResponse = ErrorResponse.of(bindingResult);
+            return ResponseEntity.badRequest().body(ResponseUtil.error(errorResponse));
         }
-        authService.join(joinRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessMessageKit("success","회원 가입이 완료되었습니다."));
+        SuccessMessageDto successMessage = new SuccessMessageDto(201, "회원 가입이 완료되었습니다.");
+        return ResponseEntity.status(HttpStatus.CREATED).body(ResponseUtil.ok(successMessage));
     }
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletRequest httpServletRequest){
+    public ResponseEntity<ApiResponseDto<?>> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletRequest httpServletRequest,BindingResult bindingResult){
         Member member = authService.login(loginRequestDto);
 
         if(member == null){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 아이디 또는 비밀번호가 틀렸습니다.");
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.NOT_FOUND, "멤버를 찾을수 없습니다");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseUtil.error(errorResponse));
         }
 
         //기존 세션 파기 후 새로운 세션 생성
@@ -53,29 +61,37 @@ public class AuthController {
         session.setAttribute("username",member.getUsername());
         session.setMaxInactiveInterval(1800);
 
-        return ResponseEntity.ok(new SuccessMessageKit("success","로그인 성공"));
+        SuccessMessageDto successMessage = new SuccessMessageDto(200, "로그인이 성공되었습니다.");
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseUtil.ok(successMessage));
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletRequest request){
+    public ResponseEntity<ApiResponseDto<?>> logout(HttpServletRequest request){
         HttpSession session = request.getSession(false);
         if (session != null){
             session.invalidate();
         }
-        return ResponseEntity.ok("로그아웃 성공");
+        SuccessMessageDto successMessage = new SuccessMessageDto(200, "로그아웃이 성공되었습니다.");
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseUtil.ok(successMessage));
     }
     @GetMapping("/admin")
-    public ResponseEntity<?> adminPage(@SessionAttribute(name = "username", required = false) Long Id){
-        if(Id == null){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+    public ResponseEntity<ApiResponseDto<?>> adminPage(@SessionAttribute(name = "username", required = false) Long Id){
+        if (Id == null) {
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseUtil.error(errorResponse));
         }
+
         Member loginMember = authService.getLoginMemberByUserId(Id);
-        if(loginMember == null){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        if (loginMember == null) {
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseUtil.error(errorResponse));
         }
-        if(!loginMember.getUser_role().equals(MemberRole.ADMIN)){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("권한이 없습니다.");
+
+        if (!loginMember.getUser_role().equals(MemberRole.ADMIN)) {
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없습니다.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseUtil.error(errorResponse));
         }
-        return ResponseEntity.ok(new SuccessMessageKit("success","어드민 접근 성공"));
+        SuccessMessageDto successMessage = new SuccessMessageDto(200, "어드민 접근이 성공되었습니다.");
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseUtil.ok(successMessage));
     }
 }

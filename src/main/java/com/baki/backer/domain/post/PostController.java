@@ -5,6 +5,10 @@ import com.baki.backer.domain.member.MemberRepository;
 import com.baki.backer.domain.post.dto.DetailPostResponseDto;
 import com.baki.backer.domain.post.dto.PostListResponseDto;
 import com.baki.backer.domain.post.dto.PostSaveRequestDto;
+import com.baki.backer.global.common.SuccessMessageDto;
+import com.baki.backer.global.common.ApiResponseDto;
+import com.baki.backer.global.error.ErrorResponse;
+import com.baki.backer.global.util.ResponseUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,13 +29,12 @@ public class PostController {
     private final MemberRepository memberRepository;
 
     @PostMapping
-    public ResponseEntity<?> posting(
+    public ResponseEntity<ApiResponseDto<?>> posting(
             @Valid @RequestBody PostSaveRequestDto postSaveRequestDto,
             BindingResult bindingResult,
             HttpServletRequest request
     ) {
         String currentUsername = authService.getCurrentSessionUsername(request);
-        Long userId = memberRepository.findIdByUsername(currentUsername);
 
         // 로그인 검사
         if (currentUsername == null) {
@@ -42,18 +45,20 @@ public class PostController {
             bindingResult.addError(new FieldError("PostSaveRequestDto", "user_Id", "존재하지 않는 아이디 입니다."));
         }
 
-        // BindingResult에 에러가 있다면 여기서 처리(예: 예외 발생 or 적절한 메시지 반환)
+        // BindingResult에 에러가 있다면 에러 응답 반환
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
+            ErrorResponse errorResponse = ErrorResponse.of(bindingResult);
+            return ResponseEntity.badRequest().body(ResponseUtil.error(errorResponse));
         }
 
-        // 정상 로직
+        Long userId = memberRepository.findIdByUsername(currentUsername);
         postService.createPost(postSaveRequestDto, userId);
-        return ResponseEntity.status(HttpStatus.CREATED).body("게시물 작성을 성공하였습니다.");
+        SuccessMessageDto message = new SuccessMessageDto(200, "게시물 작성을 성공하였습니다.");
+        return ResponseEntity.status(HttpStatus.CREATED).body(ResponseUtil.ok(message));
     }
 
     @PatchMapping("/{post_id}")
-    public ResponseEntity<?> updating(
+    public ResponseEntity<ApiResponseDto<?>> updating(
             @Valid @RequestBody PostSaveRequestDto requestDto,
             BindingResult bindingResult,
             HttpServletRequest request,
@@ -71,15 +76,17 @@ public class PostController {
         }
 
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
+            ErrorResponse errorResponse = ErrorResponse.of(bindingResult);
+            return ResponseEntity.badRequest().body(ResponseUtil.error(errorResponse));
         }
 
         postService.updatePost(post_id, requestDto);
-        return ResponseEntity.status(HttpStatus.OK).body("게시물 수정을 성공하였습니다.");
+        SuccessMessageDto message = new SuccessMessageDto(200, "게시물 수정을 성공하였습니다.");
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseUtil.ok(message));
     }
 
     @DeleteMapping("/{post_id}")
-    public ResponseEntity<?> removing(
+    public ResponseEntity<ApiResponseDto<?>> removing(
             @PathVariable Long post_id,
             HttpServletRequest request
     ) {
@@ -87,27 +94,27 @@ public class PostController {
 
         // 로그인 검사
         if (currentUsername == null) {
-            // 필요 시 ResponseEntity로 에러 반환
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseUtil.error(errorResponse));
         }
         // 다른 유저가 삭제할 경우
         if (postService.checkWriterEquals(currentUsername, post_id)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("삭제 권한이 없습니다.");
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "삭제 권한이 없습니다.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseUtil.error(errorResponse));
         }
 
         postService.deletePost(post_id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("게시물 삭제를 성공하였습니다.");
+        SuccessMessageDto message = new SuccessMessageDto(200, "게시물 삭제를 성공하였습니다.");
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ResponseUtil.ok(message));
     }
 
     @GetMapping("/view/{post_id}")
-    public ResponseEntity<DetailPostResponseDto> getPost(
+    public ResponseEntity<ApiResponseDto<DetailPostResponseDto>> getPost(
             @PathVariable Long post_id,
             HttpServletRequest request
     ) {
-        // (원한다면 여기서도 로그인 / 접근 권한을 검사할 수 있음)
-
         DetailPostResponseDto responseDto = postService.getPostInfo(post_id);
-        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseUtil.ok(responseDto));
     }
 
     /**
@@ -121,13 +128,14 @@ public class PostController {
      * @return 페이징 처리된 게시물 목록
      */
     @GetMapping("/list")
-    public Page<PostListResponseDto> getPostList(
+    public ResponseEntity<ApiResponseDto<Page<PostListResponseDto>>> getPostList(
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "category", required = false) String category,
             @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(value = "size", required = false, defaultValue = "20") Integer size,
             @RequestParam(value = "sort", required = false, defaultValue = "create_Date,desc") String sort
     ) {
-        return postService.getPostList(keyword, category, page, size, sort);
+        Page<PostListResponseDto> posts = postService.getPostList(keyword, category, page, size, sort);
+        return ResponseEntity.ok(ResponseUtil.ok(posts));
     }
 }
