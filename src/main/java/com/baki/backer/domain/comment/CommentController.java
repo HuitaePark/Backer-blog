@@ -39,7 +39,7 @@ public class CommentController {
         this.memberRepository = memberRepository;
         this.postRepository = postRepository;
     }
-    @GetMapping("/post/{post_id}/comments/")
+    @GetMapping("/post/{post_id}/comment/")
     public ResponseEntity<ApiResponseDto<List<CommentResponseDto>>> findAllComment(
             @PathVariable("post_id") Long postId,
             @RequestParam(value = "cursor", required = false) Long cursor) {
