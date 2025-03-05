@@ -2,6 +2,7 @@ package com.baki.backer.domain.auth;
 
 import com.baki.backer.domain.auth.dto.JoinRequestDto;
 import com.baki.backer.domain.auth.dto.LoginRequestDto;
+import com.baki.backer.domain.auth.dto.LoginResponseDto;
 import com.baki.backer.domain.member.Member;
 import com.baki.backer.domain.member.MemberRole;
 import com.baki.backer.global.common.ApiResponseDto;
@@ -47,7 +48,7 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(ResponseUtil.ok(successMessage));
     }
     @PostMapping("/login")
-    public ResponseEntity<ApiResponseDto<?>> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletRequest httpServletRequest,BindingResult bindingResult){
+    public ResponseEntity<ApiResponseDto<LoginResponseDto>> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletRequest httpServletRequest, BindingResult bindingResult){
         Member member = authService.login(loginRequestDto);
 
         if(member == null){
@@ -61,8 +62,8 @@ public class AuthController {
         session.setAttribute("username",member.getUsername());
         session.setMaxInactiveInterval(1800);
 
-        SuccessMessageDto successMessage = new SuccessMessageDto(200, "로그인이 성공되었습니다.");
-        return ResponseEntity.status(HttpStatus.OK).body(ResponseUtil.ok(successMessage));
+        LoginResponseDto responseDto = new LoginResponseDto(member.getUsername(),member.getId(),"로그인에 성공하셨습니다.");
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseUtil.ok(responseDto));
     }
 
     @PostMapping("/logout")
