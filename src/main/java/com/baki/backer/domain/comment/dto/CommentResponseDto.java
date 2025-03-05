@@ -12,7 +12,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CommentResponseDto {
     private Long id;
+    private Long postId;
     private String content;
     private String author;
-    private LocalDateTime create_date;
+    private LocalDateTime createDate;
+
+
 }

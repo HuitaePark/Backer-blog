@@ -5,6 +5,9 @@ import com.baki.backer.domain.member.Member;
 import com.baki.backer.domain.post.Post;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -29,6 +32,10 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_post_id",nullable = false)
     private Post post;
+
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime createDate;
 
     public void updateDto(CommentRequestDto commentRequestDto) {
         this.content = content;

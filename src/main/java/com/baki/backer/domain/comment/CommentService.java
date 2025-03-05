@@ -8,11 +8,13 @@ import com.baki.backer.domain.post.Post;
 import com.baki.backer.domain.post.repository.PostRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,16 +30,32 @@ public class CommentService{
         this.postRepository = postRepository;
     }
 
-    @Transactional(readOnly = true)
-    public List<CommentResponseDto> getAllComment(Long post_id){
 
-        List<Comment> comments = commentRepository.findByPostId(post_id);
+    public List<CommentResponseDto> getComment(Long postId, Long cursor) {
+        // 초기 조회 시 cursor가 null이면 0으로 처리
+        if (cursor == null) {
+            cursor = 0L;
+        }
 
-        return  comments.stream()
-                .map(comment -> new CommentResponseDto(comment.getId(),
-                        comment.getContent(),
-                        comment.getMember().getName(),
-                        comment.getPost().getCreate_Date()))
+        Pageable pageable = PageRequest.of(0, 10);
+        List<Comment> comments = commentRepository.findNextComments(cursor, postId, pageable);
+
+        return convertToDto(comments);
+    }
+    private List<CommentResponseDto> convertToDto(List<Comment> comments) {
+        return comments.stream()
+                .map(comment -> {
+                    // 멤버가 null이거나 존재하지 않으면 "Unknown" 처리
+                    String memberName = comment.getMember() == null ? "Unknown" : Optional.ofNullable(comment.getMember().getName()).orElse("Unknown");
+
+                    return new CommentResponseDto(
+                            comment.getId(),
+                            comment.getPost() != null ? comment.getPost().getId() : null,
+                            comment.getContent(),
+                            memberName,
+                            comment.getCreateDate()
+                    );
+                })
                 .collect(Collectors.toList());
     }
     /**
