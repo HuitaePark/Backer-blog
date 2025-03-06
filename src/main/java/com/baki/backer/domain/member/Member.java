@@ -3,6 +3,8 @@ package com.baki.backer.domain.member;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Builder
 @Getter
@@ -30,5 +32,7 @@ public class Member {
     @Column(name = "name",nullable = false)
     private String name;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime createDate;
 
 }

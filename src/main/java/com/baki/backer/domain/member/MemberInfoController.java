@@ -2,9 +2,7 @@ package com.baki.backer.domain.member;
 
 import com.baki.backer.domain.member.MemberInfoService;
 import com.baki.backer.domain.member.MemberRepository;
-import com.baki.backer.domain.member.dto.MemberInfoDto;
-import com.baki.backer.domain.member.dto.MemberUpdateDto;
-import com.baki.backer.domain.member.dto.MyPageResponseDto;
+import com.baki.backer.domain.member.dto.*;
 import com.baki.backer.global.common.ApiResponseDto;
 import com.baki.backer.global.error.ErrorResponse;
 import com.baki.backer.global.util.ResponseUtil;
@@ -14,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/member")
@@ -68,9 +68,8 @@ public class MemberInfoController {
      * 3) 회원의 게시글/댓글 활동 조회
      * GET /member/{id}/activity
      */
-    @GetMapping("/{id}/activity")
-    public ResponseEntity<ApiResponseDto<MyPageResponseDto>> getPostAndComment(@PathVariable("id") Long memberId,
-                                                                               HttpServletRequest request) {
+    @GetMapping("/{id}/activity/post")
+    public ResponseEntity<ApiResponseDto<List<PostResponseDto>>> getAllPosts(@PathVariable("id") Long memberId, HttpServletRequest request) {
         try {
             HttpSession session = request.getSession(false);
             if (session == null) {
@@ -92,7 +91,41 @@ public class MemberInfoController {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseUtil.error(errorResponse));
             }
 
-            MyPageResponseDto response = memberInfoService.getPostAndComments(username);
+            List<PostResponseDto> response = memberInfoService.getAllPosts(username);
+            return ResponseEntity.ok(ResponseUtil.ok(response));
+
+        } catch (IllegalArgumentException e) {
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.NOT_FOUND, e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseUtil.error(errorResponse));
+        } catch (Exception e) {
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ResponseUtil.error(errorResponse));
+        }
+    }
+    @GetMapping("/{id}/activity/comment")
+    public ResponseEntity<ApiResponseDto<List<CommentResponseDto>>> getAllComments(@PathVariable("id") Long memberId, HttpServletRequest request) {
+        try {
+            HttpSession session = request.getSession(false);
+            if (session == null) {
+                ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.UNAUTHORIZED, "인증이 필요합니다.");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseUtil.error(errorResponse));
+            }
+
+            String username = (String) session.getAttribute("username");
+            if (username == null) {
+                ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.UNAUTHORIZED, "인증이 필요합니다.");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseUtil.error(errorResponse));
+            }
+
+            Member member = memberRepository.findByUsername(username)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다: " + username));
+
+            if (!member.getId().equals(memberId)) {
+                ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "접근 권한이 없습니다.");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseUtil.error(errorResponse));
+            }
+
+            List<CommentResponseDto> response = memberInfoService.getAllComments(username);
             return ResponseEntity.ok(ResponseUtil.ok(response));
 
         } catch (IllegalArgumentException e) {

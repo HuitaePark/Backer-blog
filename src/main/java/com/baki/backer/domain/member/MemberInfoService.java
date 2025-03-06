@@ -54,26 +54,25 @@ public class MemberInfoService {
         return new MemberInfoDto(saved);
     }
 
-    public MyPageResponseDto getPostAndComments(String username){
+    public List<PostResponseDto> getAllPosts(String username){
         Member member = memberRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다: " + username));
 
-        // member를 통해 게시글 목록, 댓글 목록 조회
         var postList = postRepository.findAllByMember(member);
-        var commentList = commentRepository.findAllByMember(member);
 
-        // DTO 변환
-        List<PostResponseDto> postDtos = postList.stream()
+        return postList.stream()
                 .map(PostResponseDto::of)
                 .toList();
+    }
 
-        List<CommentResponseDto> commentDtos = commentList.stream()
+    public List<CommentResponseDto> getAllComments(String username){
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다: " + username));
+
+        var commentList = commentRepository.findAllByMember(member);
+
+        return commentList.stream()
                 .map(CommentResponseDto::of)
                 .toList();
-
-        return MyPageResponseDto.builder()
-                .posts(postDtos)
-                .comments(commentDtos)
-                .build();
     }
 }
