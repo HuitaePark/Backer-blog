@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping  // 일반적으로 컨트롤러 레벨에서 RequestMapping 지정
+//@RequestMapping  // 일반적으로 컨트롤러 레벨에서 RequestMapping 지정
 public class CommentController {
 
     private final CommentService commentService;
