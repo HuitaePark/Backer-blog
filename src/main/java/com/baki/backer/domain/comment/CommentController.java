@@ -39,6 +39,13 @@ public class CommentController {
         this.memberRepository = memberRepository;
         this.postRepository = postRepository;
     }
+
+    /**
+     *
+     * @param postId 어떤 게시글을 조회할지
+     * @param cursor 어디부터 조회할지
+     * @return cursor 부터 시작하는 댓글 10개
+     */
     @GetMapping("/post/{post_id}/comment")
     public ResponseEntity<ApiResponseDto<List<CommentResponseDto>>> findAllComment(
             @PathVariable("post_id") Long postId,
