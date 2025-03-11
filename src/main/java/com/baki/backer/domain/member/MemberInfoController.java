@@ -70,7 +70,7 @@ public class MemberInfoController {
      */
     @GetMapping("/{id}/activity/post")
     public ResponseEntity<ApiResponseDto<List<PostResponseDto>>> getAllPosts(@PathVariable("id") Long memberId, HttpServletRequest request) {
-        try {
+
             HttpSession session = request.getSession(false);
             if (session == null) {
                 ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.UNAUTHORIZED, "인증이 필요합니다.");
@@ -78,11 +78,6 @@ public class MemberInfoController {
             }
 
             String username = (String) session.getAttribute("username");
-            if (username == null) {
-                ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.UNAUTHORIZED, "인증이 필요합니다.");
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseUtil.error(errorResponse));
-            }
-
             Member member = memberRepository.findByUsername(username)
                     .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다: " + username));
 
@@ -94,17 +89,10 @@ public class MemberInfoController {
             List<PostResponseDto> response = memberInfoService.getAllPosts(username);
             return ResponseEntity.ok(ResponseUtil.ok(response));
 
-        } catch (IllegalArgumentException e) {
-            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.NOT_FOUND, e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseUtil.error(errorResponse));
-        } catch (Exception e) {
-            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ResponseUtil.error(errorResponse));
-        }
     }
     @GetMapping("/{id}/activity/comment")
     public ResponseEntity<ApiResponseDto<List<CommentResponseDto>>> getAllComments(@PathVariable("id") Long memberId, HttpServletRequest request) {
-        try {
+
             HttpSession session = request.getSession(false);
             if (session == null) {
                 ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.UNAUTHORIZED, "인증이 필요합니다.");
@@ -127,13 +115,5 @@ public class MemberInfoController {
 
             List<CommentResponseDto> response = memberInfoService.getAllComments(username);
             return ResponseEntity.ok(ResponseUtil.ok(response));
-
-        } catch (IllegalArgumentException e) {
-            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.NOT_FOUND, e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseUtil.error(errorResponse));
-        } catch (Exception e) {
-            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ResponseUtil.error(errorResponse));
         }
-    }
 }
