@@ -16,7 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -36,22 +35,16 @@ public class PostController {
     ) {
         String currentUsername = authService.getCurrentSessionUsername(request);
 
-        // 로그인 검사
-        if (currentUsername == null) {
-            bindingResult.addError(new FieldError("PostSaveRequestDto", "username", "로그인이 필요합니다."));
-        }
-        // 존재하는 유저인지 검사
-        if (!postService.checkLoginId(currentUsername)) {
-            bindingResult.addError(new FieldError("PostSaveRequestDto", "user_Id", "존재하지 않는 아이디 입니다."));
-        }
 
         // BindingResult에 에러가 있다면 에러 응답 반환
         if (bindingResult.hasErrors()) {
-            ErrorResponse errorResponse = ErrorResponse.of(bindingResult);
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러가 발생하였습니다.");
             return ResponseEntity.badRequest().body(ResponseUtil.error(errorResponse));
         }
 
+        //리포지토리를 컨트롤러가 의존해도 될까?
         Long userId = memberRepository.findIdByUsername(currentUsername);
+
         postService.createPost(postSaveRequestDto, userId);
         SuccessMessageDto message = new SuccessMessageDto(200, "게시물 작성을 성공하였습니다.");
         return ResponseEntity.status(HttpStatus.CREATED).body(ResponseUtil.ok(message));
@@ -66,17 +59,15 @@ public class PostController {
     ) {
         String currentUsername = authService.getCurrentSessionUsername(request);
 
-        // 로그인 검사
-        if (currentUsername == null) {
-            bindingResult.addError(new FieldError("PostSaveRequestDto", "username", "로그인이 필요합니다."));
-        }
         // 다른 유저가 수정할 경우
         if (postService.checkWriterEquals(currentUsername, post_id)) {
-            bindingResult.addError(new FieldError("PostSaveRequestDto", "username", "수정 권한이 없습니다."));
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "수정 권한이 없습니다.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseUtil.error(errorResponse));
         }
 
+        // 기타 에러
         if (bindingResult.hasErrors()) {
-            ErrorResponse errorResponse = ErrorResponse.of(bindingResult);
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러가 발생하였습니다.");
             return ResponseEntity.badRequest().body(ResponseUtil.error(errorResponse));
         }
 
@@ -92,11 +83,7 @@ public class PostController {
     ) {
         String currentUsername = authService.getCurrentSessionUsername(request);
 
-        // 로그인 검사
-        if (currentUsername == null) {
-            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseUtil.error(errorResponse));
-        }
+
         // 다른 유저가 삭제할 경우
         if (postService.checkWriterEquals(currentUsername, post_id)) {
             ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "삭제 권한이 없습니다.");
