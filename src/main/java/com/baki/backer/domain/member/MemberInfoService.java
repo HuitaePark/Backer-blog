@@ -54,9 +54,9 @@ public class MemberInfoService {
         return new MemberInfoDto(saved);
     }
 
-    public List<PostResponseDto> getAllPosts(String username){
-        Member member = memberRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다: " + username));
+    public List<PostResponseDto> getAllPosts(Long userId){
+        Member member = memberRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다: " + userId));
 
         var postList = postRepository.findAllByMember(member);
 
@@ -65,9 +65,9 @@ public class MemberInfoService {
                 .toList();
     }
 
-    public List<CommentResponseDto> getAllComments(String username){
-        Member member = memberRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다: " + username));
+    public List<CommentResponseDto> getAllComments(Long memberId){
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다: " + memberId));
 
         var commentList = commentRepository.findAllByMember(member);
 
