@@ -57,6 +57,15 @@ dependencies {
 	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
+	//오라클 클라우드 종속성
+	implementation 'com.oracle.oci.sdk:oci-java-sdk:3.60.0'
+	implementation 'com.oracle.oci.sdk:oci-java-sdk-common:3.60.0'
+	implementation 'com.oracle.oci.sdk:oci-java-sdk-objectstorage:3.60.0'
+	implementation 'com.oracle.oci.sdk:oci-java-sdk-common-httpclient:3.60.0'
+	implementation 'com.oracle.oci.sdk:oci-java-sdk-common-httpclient-choices:3.60.0'
+	implementation 'com.oracle.oci.sdk:oci-java-sdk-common-httpclient-jersey3:3.60.0'
+
 }
 
 tasks.named('test') {

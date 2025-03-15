@@ -1,17 +1,29 @@
 package com.baki.backer.domain.member;
 
-import com.baki.backer.domain.member.dto.*;
+import com.baki.backer.domain.image.ImageService;
+import com.baki.backer.domain.member.dto.CommentResponseDto;
+import com.baki.backer.domain.member.dto.MemberInfoDto;
+import com.baki.backer.domain.member.dto.MemberUpdateDto;
+import com.baki.backer.domain.member.dto.PostResponseDto;
 import com.baki.backer.global.common.ApiResponseDto;
 import com.baki.backer.global.error.ErrorResponse;
 import com.baki.backer.global.util.ResponseUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/member")
@@ -19,10 +31,10 @@ import java.util.List;
 public class MemberInfoController {
 
     private final MemberInfoService memberInfoService;
+    private final ImageService imageService;
 
     /**
-     * 1) 멤버 조회
-     * GET /member/{id}
+     * 1) 멤버 조회 GET /member/{id}
      */
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponseDto<MemberInfoDto>> getMember(@PathVariable Long id, HttpServletRequest request) {
@@ -39,8 +51,7 @@ public class MemberInfoController {
     }
 
     /**
-     * 2) 멤버 비밀번호 & 이름 수정
-     * PATCH /member/{id}
+     * 2) 멤버 비밀번호 & 이름 수정 PATCH /member/{id}
      */
     @PatchMapping("/{id}")
     public ResponseEntity<ApiResponseDto<MemberInfoDto>> updateMember(@PathVariable Long id,
@@ -56,23 +67,39 @@ public class MemberInfoController {
 
     /**
      * 3) 회원의 게시글 조회
-     *
      */
     @GetMapping("/{id}/activity/post")
     public ResponseEntity<ApiResponseDto<List<PostResponseDto>>> getAllPosts(@PathVariable("id") Long memberId) {
-            //멤버 아이디로 포스트 검색후 반환
-            List<PostResponseDto> response = memberInfoService.getAllPosts(memberId);
-            return ResponseEntity.ok(ResponseUtil.ok(response));
+        //멤버 아이디로 포스트 검색후 반환
+        List<PostResponseDto> response = memberInfoService.getAllPosts(memberId);
+        return ResponseEntity.ok(ResponseUtil.ok(response));
     }
 
     /**
      * 4) 회원의 댓글 조회
-     *
      */
     @GetMapping("/{id}/activity/comment")
     public ResponseEntity<ApiResponseDto<List<CommentResponseDto>>> getAllComments(@PathVariable("id") Long memberId) {
-            //멤버 아이디로 코멘트 검색후 반환
-            List<CommentResponseDto> response = memberInfoService.getAllComments(memberId);
-            return ResponseEntity.ok(ResponseUtil.ok(response));
+        //멤버 아이디로 코멘트 검색후 반환
+        List<CommentResponseDto> response = memberInfoService.getAllComments(memberId);
+        return ResponseEntity.ok(ResponseUtil.ok(response));
+    }
+
+    /**
+     * 5) 프로필 이미지 업로드 POST /member/{id}/profile-image
+     */
+    @PostMapping("/{id}/profile-image")
+    public ResponseEntity<ApiResponseDto<Long>> uploadProfileImage(
+            @PathVariable Long id,
+            @RequestParam("file") MultipartFile file,
+            HttpServletRequest request, BindingResult bindingResult) throws Exception {
+
+        if (bindingResult.hasErrors()) {
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러가 발생하였습니다.");
+            return ResponseEntity.badRequest().body(ResponseUtil.error(errorResponse));
         }
+
+        Long imageId = imageService.uploadProfileImage(file, id);
+        return ResponseEntity.ok(ResponseUtil.ok(imageId));
+    }
 }

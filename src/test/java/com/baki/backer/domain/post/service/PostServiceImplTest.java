@@ -1,8 +1,13 @@
 package com.baki.backer.domain.post.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import com.baki.backer.domain.member.Member;
-import com.baki.backer.domain.member.MemberRole;
 import com.baki.backer.domain.member.MemberRepository;
+import com.baki.backer.domain.member.MemberRole;
 import com.baki.backer.domain.post.Category;
 import com.baki.backer.domain.post.Post;
 import com.baki.backer.domain.post.PostService;
@@ -17,8 +22,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest
@@ -63,6 +66,7 @@ class PostServiceImplTest {
         // 4) 실제 DB에 저장 (영속화)
         this.post = postRepository.save(postEntity);
     }
+
     @Test
     void checkLoginId() {
 
@@ -103,7 +107,7 @@ class PostServiceImplTest {
     @Test
     void getPostInfo() {
         // given
-        Long postId = post.getPost_id(); // 위에서 저장된 post의 PK
+        Long postId = post.getId(); // 위에서 저장된 post의 PK
 
         // when
         DetailPostResponseDto result = postService.getPostInfo(postId);

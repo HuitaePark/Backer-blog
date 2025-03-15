@@ -38,7 +38,17 @@ class AuthServiceTest {
         joinRequestDto.setUsername("test");
         joinRequestDto.setPassword("password123");
         joinRequestDto.setPasswordCheck("password123");
+        joinRequestDto.setName("Test"); joinRequestDto = new JoinRequestDto();
+        joinRequestDto.setUsername("test");
+        joinRequestDto.setPassword("password123");
+        joinRequestDto.setPasswordCheck("password123");
         joinRequestDto.setName("Test");
+
+        loginRequestDto = new LoginRequestDto();
+        loginRequestDto.setUsername("testuser");
+        loginRequestDto.setPassword("password123");
+
+        Member member = Member.builder()
 
         loginRequestDto = new LoginRequestDto();
         loginRequestDto.setUsername("testuser");

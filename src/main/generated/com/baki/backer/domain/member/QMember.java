@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -26,6 +27,8 @@ public class QMember extends EntityPathBase<Member> {
     public final StringPath name = createString("name");
 
     public final StringPath password = createString("password");
+
+    public final ListPath<com.baki.backer.domain.image.Image, com.baki.backer.domain.image.QImage> profilePictures = this.<com.baki.backer.domain.image.Image, com.baki.backer.domain.image.QImage>createList("profilePictures", com.baki.backer.domain.image.Image.class, com.baki.backer.domain.image.QImage.class, PathInits.DIRECT2);
 
     public final EnumPath<MemberRole> user_role = createEnum("user_role", MemberRole.class);
 
