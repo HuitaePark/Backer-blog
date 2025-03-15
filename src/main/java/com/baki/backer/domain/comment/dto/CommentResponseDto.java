@@ -18,6 +18,7 @@ public class CommentResponseDto {
     private Long postId;
     private String content;
     private String author;
+    private Long authorId;
     private LocalDateTime createDate;
 
 }

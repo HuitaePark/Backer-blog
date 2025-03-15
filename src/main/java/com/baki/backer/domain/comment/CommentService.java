@@ -6,25 +6,24 @@ import com.baki.backer.domain.member.Member;
 import com.baki.backer.domain.member.MemberRepository;
 import com.baki.backer.domain.post.Post;
 import com.baki.backer.domain.post.repository.PostRepository;
-
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 @Service
-public class CommentService{
+public class CommentService {
     MemberRepository memberRepository;
     CommentRepository commentRepository;
     PostRepository postRepository;
 
     @Autowired
-    public CommentService(CommentRepository commentRepository, MemberRepository memberRepository, PostRepository postRepository) {
+    public CommentService(CommentRepository commentRepository, MemberRepository memberRepository,
+                          PostRepository postRepository) {
         this.commentRepository = commentRepository;
         this.memberRepository = memberRepository;
         this.postRepository = postRepository;
@@ -42,31 +41,33 @@ public class CommentService{
 
         return convertToDto(comments);
     }
+
     private List<CommentResponseDto> convertToDto(List<Comment> comments) {
         return comments.stream()
                 .map(comment -> {
                     // 멤버가 null이거나 존재하지 않으면 "Unknown" 처리
-                    String memberName = comment.getMember() == null ? "Unknown" : Optional.ofNullable(comment.getMember().getName()).orElse("Unknown");
+                    String memberName = comment.getMember() == null ? "Unknown"
+                            : Optional.ofNullable(comment.getMember().getName()).orElse("Unknown");
 
                     return new CommentResponseDto(
                             comment.getId(),
                             comment.getPost() != null ? comment.getPost().getId() : null,
                             comment.getContent(),
                             memberName,
+                            comment.getMember() != null ? comment.getMember().getId() : null,
                             comment.getCreateDate()
                     );
                 })
                 .collect(Collectors.toList());
     }
+
     /**
-     *
      * @param request dto 입력
-     * @param userId 유저아이디 검사
-     * @param postId 게시물 아이디 검사
-     *
+     * @param userId  유저아이디 검사
+     * @param postId  게시물 아이디 검사
      */
 
-    public void createComment(CommentRequestDto request, Long userId,Long postId) {
+    public void createComment(CommentRequestDto request, Long userId, Long postId) {
         // 현재 유저의 Member 엔티티 조회
         Member member = memberRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));

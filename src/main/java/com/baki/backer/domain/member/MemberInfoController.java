@@ -14,7 +14,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -92,12 +91,7 @@ public class MemberInfoController {
     public ResponseEntity<ApiResponseDto<Long>> uploadProfileImage(
             @PathVariable Long id,
             @RequestParam("file") MultipartFile file,
-            HttpServletRequest request, BindingResult bindingResult) throws Exception {
-
-        if (bindingResult.hasErrors()) {
-            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러가 발생하였습니다.");
-            return ResponseEntity.badRequest().body(ResponseUtil.error(errorResponse));
-        }
+            HttpServletRequest request) throws Exception {
 
         Long imageId = imageService.uploadProfileImage(file, id);
         return ResponseEntity.ok(ResponseUtil.ok(imageId));
