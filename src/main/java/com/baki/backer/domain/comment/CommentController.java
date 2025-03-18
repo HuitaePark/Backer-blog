@@ -12,13 +12,20 @@ import com.baki.backer.global.error.ErrorResponse;
 import com.baki.backer.global.util.ResponseUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping
@@ -41,7 +48,6 @@ public class CommentController {
     }
 
     /**
-     *
      * @param postId 어떤 게시글을 조회할지
      * @param cursor 어디부터 조회할지
      * @return cursor 부터 시작하는 댓글 10개
@@ -80,17 +86,15 @@ public class CommentController {
         String currentUsername = authService.getCurrentSessionUsername(request);
         Long userId = memberRepository.findIdByUsername(currentUsername);
 
-
         commentService.createComment(commentRequestDto, userId, post_id);
         SuccessMessageDto successMessage = new SuccessMessageDto(201, "댓글 작성을 성공하였습니다.");
         return ResponseEntity.status(HttpStatus.CREATED).body(ResponseUtil.ok(successMessage));
     }
 
     /**
-     * 댓글 수정
-     * PATCH /comment/{comment_id}
+     * 댓글 수정 PATCH /comment/{comment_id}
      */
-    @PatchMapping("/{comment_id}")
+    @PatchMapping("/comment/{comment_id}")
     public ResponseEntity<ApiResponseDto<?>> updateComment(
             @PathVariable("comment_id") Long commentId,
             @Valid @RequestBody CommentRequestDto commentRequestDto,
@@ -111,10 +115,9 @@ public class CommentController {
     }
 
     /**
-     * 댓글 삭제
-     * DELETE /comment/{comment_id}
+     * 댓글 삭제 DELETE /comment/{comment_id}
      */
-    @DeleteMapping("/{comment_id}")
+    @DeleteMapping("/comment/{comment_id}")
     public ResponseEntity<ApiResponseDto<?>> deleteComment(
             @PathVariable("comment_id") Long commentId,
             HttpServletRequest request
