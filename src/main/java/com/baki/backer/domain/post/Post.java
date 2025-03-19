@@ -3,12 +3,26 @@ package com.baki.backer.domain.post;
 import com.baki.backer.domain.comment.Comment;
 import com.baki.backer.domain.member.Member;
 import com.baki.backer.domain.post.dto.PostSaveRequestDto;
-import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 
 @Getter
@@ -24,13 +38,13 @@ public class Post {
     @Column(name = "id")
     private Long id;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Convert(converter = CategoryConverter.class)
     private Category category_id;
 
-    @Column(name = "title",nullable = false)
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "content",nullable = false,columnDefinition = "TEXT")
+    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
     @CreationTimestamp
