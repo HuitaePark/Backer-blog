@@ -38,7 +38,7 @@ public class Post {
     @Column(name = "id")
     private Long id;
 
-    @Convert(converter = CategoryConverter.class)
+    @Convert(converter = CategoryConverter.class) //enum과 디비의 값 전환
     private Category category_id;
 
     @Column(name = "title", nullable = false)
